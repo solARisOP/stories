@@ -10,6 +10,11 @@ const BookmarkSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Slide",
         required: [true, "Slide cannot be empty"]
+    },
+    story: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Story",
+        required: [true, "Story cannot be empty"]
     }
 },{
     timestamps: true

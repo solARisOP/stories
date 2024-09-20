@@ -1,17 +1,17 @@
 import mongoose from "mongoose";
 import { ApiError } from "../utils/ApiError.js";
 
-const StorieSchema = new mongoose.Schema({
+const StorySchema = new mongoose.Schema({
     owner:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required: [true, "storie should belong to a particular user, user cannot be empty"]
+        required: [true, "story should belong to a particular user, user cannot be empty"]
     },
-    storietype:{
+    storytype:{
         type: String,
         trim: true,
         enum: [ "food", "health and fitness", "travel", "movie", "education"],
-        required: [true, "type of a storie is required to create a storie"]
+        required: [true, "type of a story is required to create a story"]
     },
     slides:[{
         type: mongoose.Schema.Types.ObjectId,
@@ -21,14 +21,14 @@ const StorieSchema = new mongoose.Schema({
     timestamps: true
 });
 
-StorieSchema.pre('validate', function(next){
+StorySchema.pre('validate', function(next){
     if(this.slides.length < 3) {
-        return next(new ApiError(400, "storie should contain atleast three slides"));
+        return next(new ApiError(400, "story should contain atleast three slides"));
     }
     if(this.slides.length > 6) {
-        return next(new ApiError(400, "storie should contain more than six slides"));
+        return next(new ApiError(400, "story should contain more than six slides"));
     }
     next();
 })
 
-export const Storie = mongoose.model('Storie', StorieSchema);
+export const Story = mongoose.model('Story', StorySchema);
