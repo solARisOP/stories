@@ -56,7 +56,7 @@ const unlikeSlide = async (req, res) => {
 }
 
 const bookmarkSlide = async (req, res) => {
-    const {storyId, slideId} = req.query
+    const {storyId, slideId} = req.params
 
     const story = await Story.findById(storyId)
 
@@ -102,5 +102,12 @@ const unmarkSlide = async (req, res) => {
         {},
         "user unmarked the slide successfully"
     ))
+}
+
+export {
+    likeSlide,
+    unlikeSlide,
+    bookmarkSlide,
+    unmarkSlide
 }
 

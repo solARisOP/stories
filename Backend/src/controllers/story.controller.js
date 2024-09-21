@@ -1,13 +1,16 @@
-import { ApiError } from "../utils/ApiError"
-import { ApiResponse } from "../utils/ApiResponse"
+import { ApiError } from "../utils/ApiError.js"
+import { ApiResponse } from "../utils/ApiResponse.js"
 import { Slide } from "../models/slide.model.js"
-import { validateData, validateUpdationData } from "../validators/data.validator.js";
+import { 
+    validateData, 
+    validateUpdationData 
+} from "../validators/data.validator.js";
 import { Story } from "../models/story.model.js";
 
 const createStory = async(req, res) => {
     const { type, slides } = req.body;
 
-    const slideTypes = validateData(type, slides)
+    const slideTypes = await validateData(type, slides)
 
     const newSlides = await Promise.all(slides.map((slide, idx)=>
         Slide.create({
@@ -97,11 +100,10 @@ const updateStory = async(req, res) => {
     const { key } = req.params;
     const data = req.body
 
-    const x = await validateUpdationData(req, key, data)
+    const slideTypes = await validateUpdationData(req, key, data)
 
     const promise = [];
 
-    let idx = 0;
     for (const Id in data.slides) {
         const slide = await Slide.findById(Id);
 
@@ -112,16 +114,14 @@ const updateStory = async(req, res) => {
             slide.description = data.slides[Id].description;
         }
         if (data.slides[Id].url) {
-            if(slideTypes[idx] == 'image') {
+            if(slideTypes[Id] == 'image') {
                 slide.image = data.slides[Id].url
             }
             else {
                 slide.video = data.slides[Id].url
             }
         }
-
         promise.push(slide.save());
-        idx++
     }
 
     if(data.type) {

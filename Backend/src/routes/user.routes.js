@@ -14,7 +14,7 @@ router.route('/register-user').post(registerUser)
 
 router.route('/login-user').post(loginUser)
 
-router.route('/logout-user').post(verifyJWT, logoutUser)
+router.route('/logout-user').patch(verifyJWT, logoutUser)
 
 router.route('/get-user').get(verifyJWT, getUser)
 
