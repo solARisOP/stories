@@ -31,7 +31,7 @@ const validateData = async (type, slides) => {
     else if (!slides || slides.length < 3) {
         throw new ApiError(400, "story should contain atleast three slides")
     }
-    else if (questions.length > 6) {
+    else if (slides.length > 6) {
         throw new ApiError(400, "there cannot be more than 6 slides per story")
     }
 
@@ -47,8 +47,8 @@ const validateData = async (type, slides) => {
         else if (!slide.url || !slide.url.trim()) {
             throw new ApiError(400, "url feild of slide object cannot be empty or undefined")
         }
-        const urlType = await checkUrlType(slide.url, idx)
-        urlTypes.push(urlType)
+        // const urlType = await checkUrlType(slide.url, idx)
+        urlTypes.push("image")
     }
 
     return urlTypes
@@ -71,7 +71,7 @@ const validateUpdationData = async (user, key, data) => {
     let urlTypes = {}
     for (const Id in data.slides) {
         const slide = data.slides[Id]
-        if (slide[Id].name && !slide[Id].name.trim()) {
+        if (slide.name && !slide.name.trim()) {
             throw new ApiError(400, "name cannot be empty for a slide")
         }
         const sId = new mongoose.Types.ObjectId(Id)
@@ -83,7 +83,8 @@ const validateUpdationData = async (user, key, data) => {
                 throw new ApiError(400, "url feild of slide object cannot be empty or undefined")
             }
             else {
-                urlTypes[Id] = await checkUrlType(slide.url, Id)
+                // const urlType = await checkUrlType(slide.url, Id)
+                urlTypes[Id] = "image"
             }
         }
     }

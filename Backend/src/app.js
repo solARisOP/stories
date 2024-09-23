@@ -23,7 +23,7 @@ import errorHandeler from "./middlewares/errorHandeller.middleware.js"
 import userRouter from "./routes/user.routes.js";
 import storyRouter from "./routes/story.routes.js";
 import slideRouter from "./routes/slide.routes.js";
-import feedRouter from "./routes/slide.routes.js";
+import feedRouter from "./routes/feed.routes.js";
 
 
 // routes declaration

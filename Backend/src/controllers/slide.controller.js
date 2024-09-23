@@ -69,6 +69,11 @@ const bookmarkSlide = async (req, res) => {
         throw new ApiError(400, "No story exists for this corresponding id or has already been deleted")
     }
 
+    const duplicateMark = await Bookmark.findOne({user: req.user._id, slide: slide._id})
+    if(duplicateMark) {
+        throw new ApiError(400, "User has already bookmarked the slide")
+    }
+    
     await Bookmark.create({user: req.user._id, slide: slide._id, story: story._id})
     
     return res

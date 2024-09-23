@@ -2,12 +2,14 @@ import { ApiError } from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 import { Bookmark } from "../models/bookmark.model.js"
 import { Story } from "../models/story.model.js"
+import mongoose from "mongoose"
 
-const getStories = async(type, skip) => {
+const getStories = async(param, skip) => {
     const stories = await Story.aggregate([
         {
             $match : {
-                storytype : type
+                ...(param instanceof mongoose.Types.ObjectId && {owner: param}),
+                ...(typeof param === 'string' && {storytype: param})
             }
         },
         {
@@ -19,8 +21,8 @@ const getStories = async(type, skip) => {
         {
             $lookup: {
                 from: "slides",
-                localField: "_id",
-                foreignField: "slides",
+                localField: "slides",
+                foreignField: "_id",
                 as: "slides",
             }
         },
@@ -29,6 +31,11 @@ const getStories = async(type, skip) => {
                 slide : {
                     $first: "$slides"
                 }
+            }
+        },
+        {
+            $project: {
+                slides: 0
             }
         }
     ])
@@ -52,7 +59,7 @@ const getBookmarks = async (req, res) => {
             }
         },
         {
-            $skip: parseInt(skip)
+            $skip: parseInt(skip) || 0
         },
         {
             $limit: 5
@@ -62,17 +69,24 @@ const getBookmarks = async (req, res) => {
                 from: "slides",
                 localField: "slide",
                 foreignField: "_id",
-                as: "relatedSlides"
+                as: "slides"
+            }
+        },
+        {
+            $addFields: {
+                slide : {
+                    $first: "$slides"
+                }
             }
         },
         {
             $project: {
-                slide : 0
+                slides: 0
             }
         }
     ])
 
-    if(!stories.length) {
+    if(!marks.length) {
         throw new ApiError(400, "no more bookmarks avaliable")
     }
 
@@ -96,8 +110,12 @@ const getBookmarks = async (req, res) => {
 
 const getFeedStories = async (req, res) => {
     const storyTypes = [ "food", "health and fitness", "travel", "movie", "education"];
-    const data = await Promise.all(storyTypes.map(type => getStories(type, 0)))
+    const promises = storyTypes.map(type => getStories(type, 0))
+    if(req.user) {
+        promises.push(getStories(req.user._id, 0))
+    }
     
+    const data = await Promise.all(promises)
     return res
     .status(200)
     .json(new ApiResponse(
@@ -108,8 +126,7 @@ const getFeedStories = async (req, res) => {
 }
 
 const getStoriesType = async (req, res) => {
-    const {skip} = req.query
-    const {type} = req.params
+    const {skip, type} = req.query
 
     const {next, stories} = await getStories(type, parseInt(skip) || 0)
 

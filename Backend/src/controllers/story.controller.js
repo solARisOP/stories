@@ -6,6 +6,7 @@ import {
     validateUpdationData 
 } from "../validators/data.validator.js";
 import { Story } from "../models/story.model.js";
+import mongoose from "mongoose";
 
 const createStory = async(req, res) => {
     const { type, slides } = req.body;
@@ -14,8 +15,8 @@ const createStory = async(req, res) => {
 
     const newSlides = await Promise.all(slides.map((slide, idx)=>
         Slide.create({
-            name: question.question,
-            description: question.timer ? question.timer : 0,
+            name: slide.name,
+            description: slide.description,
             ...(slideTypes[idx] == 'image' && {image: slide.url}),
             ...(slideTypes[idx] == 'video' && {video: slide.url}),
         })
@@ -46,14 +47,12 @@ const getStory = async(req, res) => {
                 from: "slides",
                 localField: "slides",
                 foreignField: "_id",
-                as: "relatedSlides"
+                as: "slides"
             }
         },
         {
             $project: {
-                owner: 0,
-                storytype: 0,
-                slides: 0
+                owner: 0
             }
         }
     ])
@@ -100,7 +99,7 @@ const updateStory = async(req, res) => {
     const { key } = req.params;
     const data = req.body
 
-    const slideTypes = await validateUpdationData(req, key, data)
+    const slideTypes = await validateUpdationData(req.user, key, data)
 
     const promise = [];
 
