@@ -4,7 +4,7 @@ function Stories() {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', width: "100%", alignItems: 'center' }}>
             <div style={{ width: "100%", marginBottom: "20px"}}>
-                <p style={{fontSize: "20px", fontSize: "35px", fontWeight: "700", textAlign: 'center'}}>You Stories</p>
+                <p style={{fontSize: "35px", fontWeight: "700", textAlign: 'center'}}>You Stories</p>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: "repeat(4, minmax(0, 1fr))", justifyItems: "center", width: "100%", rowGap: "30px" }}>
                 {[1, 1, 1, 1].map(ele =>

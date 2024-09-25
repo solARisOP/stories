@@ -1,4 +1,3 @@
-import React from 'react'
 import "./index.css"
 import { useSelector } from 'react-redux'
 import { NavLink } from 'react-router-dom';
@@ -6,11 +5,14 @@ import {
     IoMenu,
     IoBookmarkSharp
 } from "react-icons/io5";
+import Auth from "../Auth/Auth.jsx";
+import EditStory from "../EditStory/EditStory.jsx";
 
 function Navbar() {
     const user = useSelector(state => state.user);
 
     return (
+        <>
         <div className='nav-body'>
             <div className='nav-content'>
                 {user ? <>
@@ -24,6 +26,10 @@ function Navbar() {
                 </>}
             </div>
         </div>
+        <Auth title={"Register"} />
+        {/* <EditStory /> */}
+        
+        </>
     )
 }
 
