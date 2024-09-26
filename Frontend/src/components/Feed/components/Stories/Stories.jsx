@@ -1,17 +1,21 @@
-import React from 'react'
+import './index.css'
 
 function Stories() {
+    const imgUrl = 'https://images.pexels.com/photos/24014245/pexels-photo-24014245/free-photo-of-photo-of-a-small-domestic-dog-lying-on-the-floor.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', width: "100%", alignItems: 'center' }}>
-            <div style={{ width: "100%", marginBottom: "20px"}}>
-                <p style={{fontSize: "35px", fontWeight: "700", textAlign: 'center'}}>You Stories</p>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: "repeat(4, minmax(0, 1fr))", justifyItems: "center", width: "100%", rowGap: "30px" }}>
+        <div className='stories-container'>
+            <p className='stories-heading'>You Stories</p>
+            <div className='stories-row'>
                 {[1, 1, 1, 1].map(ele =>
-                        <div style={{ width: "290px", height: "520px", border: "2px solid black", borderRadius: "14px" }} />
+                    <div className='stories-story' style={{backgroundImage: `url(${imgUrl})`}}>
+                        <div className="stories-story-footer">
+                            <p className="stories-story-footer-heading">Heading comes here</p>
+                            <p className="stories-story-footer-description">Inspirational designs, illustrations, and graphic elements from the world's best designers.</p>
+                        </div>
+                    </div>
                 )}
             </div>
-            <button style={{borderRadius: "22px", fontSize: "20px", fontWeight: "400", textAlign: "center", paddingTop: "10px", lineHeight : "25px", paddingBottom: "10px", width: "135px", color: "#FFFFFF", background: "#FF7373", marginTop: "20px"}}>See more</button>
+            <button className='stories-more-btn'>See more</button>
         </div>
     )
 }

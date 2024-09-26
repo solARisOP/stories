@@ -1,0 +1,180 @@
+.edit-body {
+    width: 90%; 
+    border-radius: 20px; 
+    background-color: #FFFFFF; 
+    z-index: 10; 
+    display: flex; 
+    flex-direction: column; 
+    padding-inline: 15px;
+    padding-top: 20px; 
+    padding-bottom: 20px; 
+    gap: 17px;
+    justify-content: flex-start;
+}
+
+.edit-slides-feilds {
+    display: flex;
+    flex-direction: row;
+    gap: 17px;
+}
+
+.edit-header {
+    display: flex; 
+    align-items: flex-end; 
+    flex-direction: column; 
+    width: 100%; 
+    gap: 10px;
+}
+
+.edit-header-text-1st {
+    font-size: 10px; 
+    font-weight: 700; 
+    line-height: 13.02px;
+    display: none;
+}
+
+.edit-header-text-2nd {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px; 
+    font-weight: 700; 
+    line-height: 19.53px;
+    margin-bottom: 25px;
+}
+
+.edit-slides-div {
+    display: flex; 
+    flex-direction: column;
+    justify-content: flex-start; 
+    align-items: center;  
+    gap: 20px;
+}
+
+.edit-slide-div {
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    box-shadow: 0px 4px 15px 0px #0000001A; 
+    border-radius: 10px; 
+    width: 60px; 
+    height: 57px; 
+    position: relative;
+    cursor: pointer;
+}
+
+.edit-slide-cancel {
+    position: absolute; 
+    right: 2px; 
+    top: 2px
+}
+
+.edit-slide-title {
+    font-size: 15px; 
+    font-weight: 700; 
+    line-height: 19.53px;
+}
+
+.edit-form-container {
+    display: flex; 
+    flex-direction: column; 
+    padding-inline-start: 10px; 
+    width: 80%; 
+    gap: 20px;
+}
+
+.edit-form-field-div {
+    display: flex; 
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.edit-form-btn-div {
+    width: 100%;
+    display: flex; 
+    justify-content: center;
+}
+
+.edit-form-field-title {
+    font-size: 18px; 
+    font-weight: 700; 
+    line-height: 23.44px;
+}
+
+.edit-form-field-input {
+    border: 1px solid #000000; 
+    padding: 5px; 
+    width:100%;
+}
+
+.edit-field-text-area {
+    height: 150px;
+    resize: none;
+}
+
+.edit-btn-div {
+    display: none; 
+    gap: 10px;
+}
+
+
+.edit-btn {
+    border-radius: 20px; 
+    width: 100px; 
+    font-weight: 700; 
+    font-size: 18px; 
+    line-height: 23.44px; 
+    color: #FFFFFF; 
+    padding-top: 7px; 
+    padding-bottom: 7px;
+}
+
+@media (min-width : 650px) {
+    .edit-body {
+        width: 624px;
+        padding-inline: 40px;
+    }
+
+    .edit-slides-feilds {
+        flex-direction: column;
+    }
+
+    .edit-slides-div {
+        flex-direction: row;
+        width: 100%;
+    }
+
+    .edit-slide-div {
+        width: 76px; 
+        height: 60px; 
+    }
+
+    .edit-slide-cancel {
+        right: 5px; 
+        top: 5px
+    }
+
+    .edit-btn-div {
+        display: flex; 
+    }
+    .edit-form-btn-div {
+        justify-content: space-between;
+    }
+
+    .edit-form-field-div {
+        flex-direction: row;
+    }    
+
+    .edit-form-field-input {
+        width:60%;
+    }
+
+    .edit-header-text-1st {
+        display: flex;
+    }
+
+    .edit-header-text-2nd {
+        display: none;
+    }
+}

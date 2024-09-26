@@ -1,15 +1,97 @@
+.story-container {
+    width: 800px; 
+    z-index: 10; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+}
+
 .story-body {
-    background-image: url('your-image-url.jpg'); /* Background image */
     background-size: contain;
     background-position: center;
-    box-shadow: inset 0 -130px 17px rgb(0, 0, 0, 0.94),
-                inset 0 130px 17px rgba(0, 0, 0, 0.94); 
+    box-shadow: 0 0 30px 10px rgba(255, 255, 255, 0.253);
     background-repeat: no-repeat;
-    width: 43%; 
-    height: 650px;
-    border-radius: 10px; 
-    display: flex; 
+    width: 100%;
+    height: 100vh;
+    border-radius: 10px;
+    display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-  }
+}
+
+.story-body-header {
+    display: flex; 
+    flex-direction: column; 
+    width: 100%;
+}
+
+.story-body-bar-div {
+    display: flex; 
+    gap: 8px; 
+    width: 100%; 
+    padding-top: 35px; 
+    padding-inline: 10px;
+}
+
+.story-body-bar {
+    flex : 1 1 0%; 
+    background-color: #FFFFFF; 
+    height: 2px;
+}
+
+.story-body-op-div {
+    display: flex; 
+    padding: 20px; 
+    width: 100%; 
+    justify-content: space-between; 
+    align-items: center;
+}
+
+.story-body-footer {
+    display: flex; 
+    flex-direction: column; 
+    width: 100%; 
+    gap: 10px; 
+    padding-inline: 20px;
+}
+
+.story-footer-heading {
+    font-size: 20px; 
+    font-weight: 700; 
+    line-height: 26.04px; 
+    color: #FFFFFF;
+}
+
+.story-footer-description {
+    font-size: 10px; 
+    font-weight: 700; 
+    line-height: 13.02px; 
+    color: #FFFFFF;
+}
+
+.story-footer-op-div {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    width: 100%; 
+    padding-inline: 20px; 
+    margin-bottom: 20px;
+}
+
+.story-arrow {
+    cursor: pointer;
+    display: none;
+}
+
+@media (min-width: 450px) {
+    .story-body {
+        width: 340px;
+        height: 650px;
+    }
+
+    .story-arrow {
+        cursor: pointer;
+        display: flex;
+    }
+}

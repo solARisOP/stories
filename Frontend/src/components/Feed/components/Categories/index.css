@@ -1,0 +1,100 @@
+.cat-div {
+    display: flex; 
+    overflow: auto;
+    gap: 20px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+  
+.container::-webkit-scrollbar {
+    display: none;
+}
+
+.cat-type-border {
+    border: 5px solid #00ACD2;
+}
+
+.cat-type {
+    border-radius: 20px; 
+    height: 90px; 
+    min-width: 120px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    font-size: 17px;
+    line-height: 22.13px;
+    font-weight: 700;
+    overflow-wrap: break-word;
+    color: #FFFFFF;
+    background-size: cover;
+    background-position: center;
+    text-align: center;
+    cursor: pointer;
+}
+
+.cat-all {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.pexels.com/photos/7577748/pexels-photo-7577748.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
+}
+
+.cat-food {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.pexels.com/photos/70497/pexels-photo-70497.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
+}
+
+.cat-health {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.pexels.com/photos/669585/pexels-photo-669585.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
+}
+
+.cat-travel {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.pexels.com/photos/1271619/pexels-photo-1271619.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
+}
+
+.cat-movie {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.pexels.com/photos/66134/pexels-photo-66134.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
+}
+
+.cat-education {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
+}
+
+@media (min-width: 700px) {
+    .cat-type {
+        height: 100px; 
+        min-width: 140px; 
+    }
+}
+
+@media (min-width: 900px) {
+    .cat-type {
+        height: 130px; 
+        min-width: 170px; 
+    }
+}
+
+@media (min-width: 1150px) {
+    .cat-type {
+        height: 160px; 
+        min-width: 180px; 
+        font-size: 30px;
+        line-height: 39.06px;
+        border-radius: 36px; 
+    }
+}
+
+@media (min-width: 1220px) {
+    .cat-type {
+        height: 200px; 
+        width: 200px;
+        min-width: 200px; 
+        border-radius: 36px;
+    }
+    .cat-div {
+        gap: 40px;
+    }
+}
+
+@media (min-width: 1450px) {
+    .cat-div {
+        justify-content: space-evenly;
+        gap: 0;
+    }
+}

@@ -16,9 +16,11 @@ function Navbar() {
         <div className='nav-body'>
             <div className='nav-content'>
                 {user ? <>
-                    <button className='nav-btn nav-mark'><IoBookmarkSharp size={24} color={'#FFFFF'} />Bookmarks</button>
-                    <button className='nav-btn'>Add story</button>
-                    <div className='nav-pic' ></div>
+                    {/* <div className="navbar-drop"> */}
+                        <button className='nav-btn nav-mark'><IoBookmarkSharp size={24} color={'#FFFFF'} />Bookmarks</button>
+                        <button className='nav-btn'>Add story</button>
+                        <div className='nav-pic' ></div>
+                    {/* </div> */}
                     <IoMenu size={24} color={'#000000'} style={{cursor: "pointer"}}/>
                 </> : <>
                 <button className='nav-btn'>Register Now</button>
@@ -26,7 +28,7 @@ function Navbar() {
                 </>}
             </div>
         </div>
-        <Auth title={"Register"} />
+        {/* <Auth title={"Register"} /> */}
         {/* <EditStory /> */}
         
         </>

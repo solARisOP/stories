@@ -13,20 +13,15 @@ function Auth({title}) {
                 <MdOutlineCancel color='#FF0000' size={35}/>
             </div>
             <p className='auth-title'>{title}</p>
-            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', gap: "30px", width: "100%"}}>
-                <p style={{fontSize: "20px", fontWeight: "700", lineHeight: "26.04px", textAlign: 'right'}}>Username</p>
-                <input type="text" style={{border: "1px solid #000000", padding: "2px"}} placeholder='Enter your usename'/>
+            <div className='auth-input-div'>
+                <p className='auth-input-field-title'>Username</p>
+                <input type="text" className='auth-input-field' placeholder='Enter your usename'/>
             </div>
-            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', gap: "31px", width: "100%"}}>
-                <p style={{fontSize: "20px", fontWeight: "700", lineHeight: "26.04px", textAlign: "right"}}>Password</p>
-                <div style={{display: "flex"}}>
-                    <input type="password" style={{borderTop: "1px solid #000000", borderBottom: "1px solid #000000", borderLeft: "1px solid #000000", padding: "2px"}} placeholder='Enter your password'/>
-                    <div style={{borderTop: "1px solid #000000", borderBottom: "1px solid #000000", borderRight: "1px solid #000000"}}>
-                    <GoEye size={24}/>
-                    </div>
-                </div>
+            <div className='auth-input-div'>
+                <p className='auth-input-field-title'>Password</p>
+                <input type="password" className='auth-input-field' placeholder='Enter your password'/>
             </div>
-            <button style={{backgroundColor: "#73ABFF", fontWeight: "600", fontSize: "15px", lineHeight : "40px", width: "100px", borderRadius: "20px"}}>
+            <button className='auth-submit-btn'>
                 {title}
             </button>
 
