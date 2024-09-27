@@ -4,21 +4,39 @@
     z-index: 30;
     padding-top: 8px;
     padding-bottom: 8px;
-    /* padding-right: 12px; */
     display: flex;
     justify-content: flex-end;
-    align-items: end;
+    align-items: center;
     box-shadow: 0px 4px 15px 0px #00000026;
     background-color: #FFFFFF;
     margin-bottom: 10px;
 }
 
-.nav-content {
-    padding-right: 10px;
+.nav-content-big {
+    display: none;
+}
+
+.nav-content-small-div {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    padding: 10px;
+}
+
+.nav-content-small{
+    display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
     gap: 20px;
+    width: 100%;
+    position: absolute;
+    height: 250px;
+    top: 60px;
+    left: 0px;
+    right: 0px;
+    background-color: #FFFFFF;
+    box-shadow: 0px 4px 4px 0px #00000040;
 }
 
 .nav-btn {
@@ -34,11 +52,44 @@
     background: #FF7373;
 }
 
+.nav-big-lgt-div {
+    position: absolute; 
+    width: 200px; 
+    height: 150px; 
+    top: 60px; 
+    right: 0px; 
+    background-color: #FFFFFF; 
+    flex-direction: column; 
+    justify-content: space-evenly; 
+    align-items: center; 
+    box-shadow: 0px 4px 4px 0px #00000040;
+}
+
+.nav-dropdown-title {
+    font-size: 18px; 
+    font-weight: 700; 
+    line-height: 23.44px;
+}
+
+.nav-small-btn-div {
+    display: flex; 
+    justify-content: flex-end; 
+    align-items: center;
+}
+
+.nav-small-name-div {
+    display: flex; 
+    justify-content: space-around; 
+    align-items: center;
+    width: 100%;
+}
+
 .nav-pic {
     width: 45px;
     height: 45px;
     border-radius: 50%;
     background-color: aqua;
+    background-size: contain;
 }
 
 .nav-mark {
@@ -50,4 +101,18 @@
     align-items: center;
     justify-content: center;
     gap: 7px;
+}
+
+@media (min-width:700px) {
+    .nav-content-big {
+        display: flex;
+        padding-right: 10px;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .nav-content-small-div {
+        display: none;
+    }
 }
