@@ -1,26 +1,27 @@
+import { NavLink } from 'react-router-dom'
 import './index.css'
 
 function Categories() {
     return (
         <div className="cat-div">
-            <div className='cat-type cat-all cat-type-border' >
+            <NavLink className={({isActive})=>`cat-type cat-all ${isActive ? 'cat-type-border' : ''}`} to={'/'} >
                 All
-            </div>
-            <div className='cat-type cat-food'>
+            </NavLink>
+            <NavLink className={({isActive})=>`cat-type cat-food ${isActive ? 'cat-type-border' : ''}`} to={'/food'} >
                 Food
-            </div>
-            <div className='cat-type cat-health' >
+            </NavLink>
+            <NavLink className={({isActive})=>`cat-type cat-health ${isActive ? 'cat-type-border' : ''}`} to={'/health'} >
                 Health & Fitness
-            </div>
-            <div className='cat-type cat-travel' >
+            </NavLink>
+            <NavLink className={({isActive})=>`cat-type cat-travel ${isActive ? 'cat-type-border' : ''}`} to={'/travel'} >
                 Travel
-            </div>
-            <div className='cat-type cat-movie' >
+            </NavLink>
+            <NavLink className={({isActive})=>`cat-type cat-movie ${isActive ? 'cat-type-border' : ''}`} to={'/movie'} >
                 Movie
-            </div>
-            <div className='cat-type cat-education' >
+            </NavLink>
+            <NavLink className={({isActive})=>`cat-type cat-education ${isActive ? 'cat-type-border' : ''}`} to={'/education'} >
                 Education
-            </div>
+            </NavLink>
         </div>
     )
 }

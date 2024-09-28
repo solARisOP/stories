@@ -1,14 +1,12 @@
 import React from 'react'
 import Stories from '../Feed/components/Stories/Stories.jsx'
-import Story from '../Story/Story.jsx'
+import { useLoaderData } from 'react-router-dom'
 
 function Bookmarks() {
-  return (
-    <>
-      <Stories/>
-      <Story />
-    </>
-  )
+	const data = useLoaderData();
+	return (
+		<Stories title={"Bookmarks"} data={data} />
+	)
 }
 
 export default Bookmarks

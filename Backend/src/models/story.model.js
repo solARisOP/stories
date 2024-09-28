@@ -10,7 +10,7 @@ const StorySchema = new mongoose.Schema({
     storytype:{
         type: String,
         trim: true,
-        enum: ["food", "health and fitness", "travel", "movie", "education"],
+        enum: ["food", "health", "travel", "movie", "education"],
         required: [true, "type of a story is required to create a story"]
     },
     slides:[{

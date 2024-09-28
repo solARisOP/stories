@@ -25,7 +25,7 @@ const validateData = async (type, slides) => {
     if (!type.trim()) {
         throw new ApiError(400, "story should have a type")
     }
-    else if (!["food", "health and fitness", "travel", "movie", "education"].includes(type.trim())) {
+    else if (!["food", "health", "travel", "movie", "education"].includes(type.trim())) {
         throw new ApiError(400, `${type} is a invalid story type`)
     }
     else if (!slides || slides.length < 3) {
@@ -64,7 +64,7 @@ const validateUpdationData = async (user, key, data) => {
     else if (!story.owner.equals(user._id)) {
         throw new ApiError(403, "story does not belong to the particular user");
     }
-    else if(data.type && !["food", "health and fitness", "travel", "movie", "education"].includes(data.type)) {
+    else if(data.type && !["food", "health", "travel", "movie", "education"].includes(data.type)) {
         throw new ApiError(400, `${data.type} is invalid story type`)
     }
 

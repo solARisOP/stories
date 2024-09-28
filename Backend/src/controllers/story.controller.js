@@ -22,8 +22,10 @@ const createStory = async(req, res) => {
         })
     ))
 
-    const story = await Story.create({ owner: req.user._id, storytype: type, slides: newSlides.map(element => element._id) });
-
+    const newStory = await Story.create({ owner: req.user._id, storytype: type, slides: newSlides.map(element => element._id) });
+    
+    const story = {_id : newStory._id, slide: newSlides[0], owner: newStory.owner, storytype: newStory.storytype}
+    
     return res
         .status(200)
         .json(new ApiResponse(

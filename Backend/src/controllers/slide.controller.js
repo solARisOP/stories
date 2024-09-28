@@ -109,6 +109,10 @@ const unmarkSlide = async (req, res) => {
     ))
 }
 
+const downloadSlide = async (req, res) => {
+    
+}
+
 export {
     likeSlide,
     unlikeSlide,

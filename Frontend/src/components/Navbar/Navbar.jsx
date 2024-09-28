@@ -1,5 +1,5 @@
 import "./index.css"
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { NavLink } from 'react-router-dom';
 import {
     IoMenu,
@@ -9,8 +9,14 @@ import Auth from "../Auth/Auth.jsx";
 import EditStory from "../EditStory/EditStory.jsx";
 import { useState } from "react";
 import { FiX } from "react-icons/fi";
+import axios from "axios";
+import { setStories, setUser } from "../../features/storySlice.js";
+import { toast } from "react-toastify";
+
+const apiUrl = import.meta.env.VITE_SERVER_API
 
 function Navbar() {
+    const dispatch = useDispatch()
     const user = useSelector(state => state.user);
 
     const [openDropdown, setOpenDropdown] = useState(0);
@@ -34,19 +40,32 @@ function Navbar() {
         setAuthOpen("");
     }
 
+    const logout = async(e) => {
+        try {
+            e.target.style.pointerEvents = 'none';
+            await axios.patch(`${apiUrl}/user/logout-user`, {}, {withCredentials: true})
+            dispatch(setUser(null));
+            dispatch(setStories([]));
+            toast.success("user logged out successfully")
+        } catch (error) {
+            toast.error(error.response?.data?.message || error.message)
+        }
+        e.target.style.pointerEvents = 'auto';
+    }
+
     return (
         <>
             <div className='nav-body'>
 
                 <div className='nav-content-big'>
                     {user ? <>
-                        <button className='nav-btn nav-mark'><IoBookmarkSharp size={24} color={'#FFFFF'} />Bookmarks</button>
+                        <NavLink className='nav-btn nav-mark' to={'/bookmarks'} ><IoBookmarkSharp size={24} color={'#FFFFF'} />Bookmarks</NavLink>
                         <button className='nav-btn' onClick={openEditModal}>Add story</button>
                         <div className='nav-pic' ></div>
                         <IoMenu size={24} color={'#000000'} style={{ cursor: "pointer" }} onClick={e => setOpenDropdown(ele => !ele)} />
                         <div style={{ display: `${openDropdown ? 'flex' : 'none'}` }} className="nav-big-lgt-div">
-                            <p className=".nav-dropdown-title">Nitish</p>
-                            <button className='nav-btn'>Logout</button>
+                            <p className=".nav-dropdown-title">{user.username}</p>
+                            <button className='nav-btn' onClick={logout}>Logout</button>
                         </div>
                     </> : <>
                         <button className='nav-btn' onClick={openAuthModal} data-title ="Register">Register Now</button>
@@ -62,11 +81,11 @@ function Navbar() {
                         {user ? <>
                             <div className="nav-small-name-div">
                                 <div className='nav-pic' ></div>
-                                <p className=".nav-dropdown-title">Nitish</p>
+                                <p className=".nav-dropdown-title">{user.username}</p>
                                 <FiX size={24} color={'#000000'} style={{ cursor: "pointer" }} onClick={e => setOpenDropdown(ele => !ele)} />
                             </div>
-                            <button className='nav-btn '>Logout</button>
-                            <button className='nav-btn nav-mark'><IoBookmarkSharp size={24} color={'#FFFFF'} />Bookmarks</button>
+                            <button className='nav-btn' onClick={logout}>Logout</button>
+                            <NavLink className='nav-btn nav-mark' to={'/bookmarks'}><IoBookmarkSharp size={24} color={'#FFFFF'} />Bookmarks</NavLink>
                             <button className='nav-btn' onClick={openEditModal}>Add story</button>
                         </> : <>
                             <button className='nav-btn' onClick={openAuthModal} data-title ="Register">Register</button>
@@ -76,8 +95,8 @@ function Navbar() {
                 </div>
             </div>
 
-            {authOpen && <Auth title={authOpen} closeAuthModal={closeAuthModal} />}
-            {editOpen && <EditStory closeEditModal={closeEditModal} />}
+            {authOpen ? <Auth title={authOpen} closeAuthModal={closeAuthModal} /> : null}
+            {editOpen ? <EditStory closeEditModal={closeEditModal} /> : null}
         </>
     )
 }

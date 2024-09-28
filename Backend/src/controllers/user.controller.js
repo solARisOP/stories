@@ -1,6 +1,7 @@
 import { User } from "../models/user.model.js"
 import { ApiError } from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
+import { getStories } from "./feed.controller.js"
 
 const generateAccessAndRefreshTokens = async(userId) => {
     try {
@@ -18,20 +19,22 @@ const generateAccessAndRefreshTokens = async(userId) => {
 }
 
 const registerUser = async(req, res) => {
-    const {name, email, password} = req.body;
+    const {username, password} = req.body;
 
-    if([name, email, password].some((value)=>value?.trim()==="")){
+    if([username, password].some((value)=>value?.trim()==="")){
         throw new ApiError(400, "All fields are required");
     } 
 
-    const duplicateUser = await User.findOne({email})
+    const duplicateUser = await User.findOne({username})
+    console.log(duplicateUser);
+    
 
     if(duplicateUser) {
-        throw new ApiError(400, "User Already exists with this email")
+        throw new ApiError(400, "User Already exists with this username")
     }
+    
     const newUser = await User.create({
-        name,
-        email,
+        username,
         password,
     })
 
@@ -53,12 +56,12 @@ const registerUser = async(req, res) => {
 }
 
 const loginUser = async(req, res) => {
-    const {email, password} = req.body
-    if(!email) {
-        throw new ApiError(400, "email is required")
+    const {username, password} = req.body
+    if(!username) {
+        throw new ApiError(400, "username is required")
     }
 
-    const user = await User.findOne({email})
+    const user = await User.findOne({username})
 
     if(!user) {
         throw new ApiError(404, "user doesnot exit")
@@ -74,8 +77,7 @@ const loginUser = async(req, res) => {
 
     const loggedInUser = {
         _id : user._id,
-        name : user.name,
-        email : user.email
+        username : user.username,
     }
 
     const options = {
@@ -85,6 +87,8 @@ const loginUser = async(req, res) => {
         sameSite: 'None',
     }
 
+    const stories = await getStories(user._id)
+
     return res
     .status(200)
     .cookie("accessToken", accessToken, options)
@@ -92,7 +96,8 @@ const loginUser = async(req, res) => {
     .json(new ApiResponse(
         200, 
         {
-            user: loggedInUser
+            user: loggedInUser,
+            stories
         },
         "user logged in successfully"
     ))
@@ -123,11 +128,15 @@ const logoutUser = async(req, res) => {
 }
 
 const getUser = async(req, res) => {
+    const stories = await getStories(req.user._id)
     return res
     .status(200)
     .json(new ApiResponse(
         200,
-        {user:req.user},
+        {
+            user: req.user,
+            stories
+        },
         "user fetched sucessfully"
     ))
 }

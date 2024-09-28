@@ -3,6 +3,8 @@ import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Outlet } from 'react-router-dom'
 import { setUser, setLoading, setStories } from './features/storySlice.js'
+import Navbar from './components/Navbar/Navbar.jsx'
+
 const apiUrl = import.meta.env.VITE_SERVER_API;
 
 function App() {
@@ -12,20 +14,13 @@ function App() {
 	useEffect(() => {
 		const fetchUser = async () => {
 			try {
-				let promise = [axios.get(`${apiUrl}/user/get-user`, { withCredentials: true }),
-				axios.get(`${apiUrl}/feed/feed-stories`, {withCredentials: true})]
-					
-				promise = await Promise.all(promise)
-
-				dispatch(setUser(promise[0].data.data.user))
-
-				const storyTypes = [ "food", "health", "travel", "movie", "education", "userStories"]
-				promise[1].data.data.forEach((stories, idx) => {
-					dispatch(setStories({data:stories, key:storyTypes[idx]})) 
-				});
-
+				const res = await axios.get(`${apiUrl}/user/get-user`, { 
+					withCredentials: true 
+				})
+				const {user, stories} = res.data.data
+				dispatch(setUser(user))
+				dispatch(setStories(stories))
 			} catch (error) {
-				console.error(error);
 			}
 			dispatch(setLoading(false))
 		}
@@ -33,7 +28,10 @@ function App() {
 	}, [])
 
 	return (
-		<Outlet />
+		<>
+			<Navbar />
+			<Outlet />
+		</>
 	)
 }
 

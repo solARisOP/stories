@@ -13,7 +13,7 @@ const getStories = async(param, skip) => {
             }
         },
         {
-            $skip: skip
+            $skip: skip || 0
         },
         {
             $limit: 5
@@ -40,13 +40,7 @@ const getStories = async(param, skip) => {
         }
     ])
 
-    let next = -1;
-    if(stories.length == 5) {
-        stories.splice(4);
-        next = skip + 4;
-    }
-
-    return {next, stories};
+    return stories;
 }
 
 const getBookmarks = async (req, res) => {
@@ -62,7 +56,7 @@ const getBookmarks = async (req, res) => {
             $skip: parseInt(skip) || 0
         },
         {
-            $limit: 5
+            $limit: 4
         },
         {
             $lookup: {
@@ -90,32 +84,19 @@ const getBookmarks = async (req, res) => {
         throw new ApiError(400, "no more bookmarks avaliable")
     }
 
-    let next = -1;
-    if(marks.length == 5) {
-        marks.splice(4);
-        next = skip + 4;
-    }
-
     return res
     .status(200)
     .json(new ApiResponse(
         200,
-        {
-            marks,
-            next
-        },
+        marks,
         "bookmarks fetched successfully"
     ))
 }
 
 const getFeedStories = async (req, res) => {
-    const storyTypes = [ "food", "health and fitness", "travel", "movie", "education"];
-    const promises = storyTypes.map(type => getStories(type, 0))
-    if(req.user) {
-        promises.push(getStories(req.user._id, 0))
-    }
-    
-    const data = await Promise.all(promises)
+    const storyTypes = [ "food", "health", "travel", "movie", "education"];
+    const data = await Promise.all(storyTypes.map(type => getStories(type, 0)))
+
     return res
     .status(200)
     .json(new ApiResponse(
@@ -128,7 +109,7 @@ const getFeedStories = async (req, res) => {
 const getStoriesType = async (req, res) => {
     const {skip, type} = req.query
 
-    const {next, stories} = await getStories(type, parseInt(skip) || 0)
+    const stories = await getStories(type, parseInt(skip) || 0)
 
     if(!stories.length) {
         throw new ApiError(400, `no more stories avaliable of type ${type}`)
@@ -138,16 +119,29 @@ const getStoriesType = async (req, res) => {
     .status(200)
     .json(new ApiResponse(
         200,
-        {
-            stories,
-            next
-        },
+        stories,
         `${type} stories fetched successfully`
+    ))
+}
+
+const getUserStories = async (req, res) => {
+    const {skip} = req.query
+
+    const stories = await getStories(req.user._id, parseInt(skip))
+
+    return res
+    .status(200)
+    .json(new ApiResponse(
+        200,
+        stories,
+        "user stories fetched sucessfully"
     ))
 }
 
 export {
     getBookmarks,
     getFeedStories,
-    getStoriesType
+    getStoriesType,
+    getStories,
+    getUserStories
 }

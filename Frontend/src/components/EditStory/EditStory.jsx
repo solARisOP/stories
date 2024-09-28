@@ -5,8 +5,14 @@ import { useState } from 'react';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import isUrl from 'is-url';
+import { useDispatch } from 'react-redux';
+import { addStory } from '../../features/storySlice';
 
-function EditStory({closeEditModal}) {
+const apiUrl = import.meta.env.VITE_SERVER_API;
+
+function EditStory({closeEditModal, editData}) {
+    const dispatch = useDispatch()
+
     const [slides, setslides] = useState([{}, {}, {}])
     const [currSlide, setCurrSlide] = useState({})
     const [currIdx, setCurrIdx] = useState(0);
@@ -102,7 +108,7 @@ function EditStory({closeEditModal}) {
         })
     }
 
-    const nextSlide = () => {        
+    const nextSlide = () => {
         setCurrIdx(ele => {
             if(currIdx == slides.length-1) return ele
             setslides(arr=>{
@@ -115,7 +121,7 @@ function EditStory({closeEditModal}) {
         })
     }
 
-    const createStory = (e) => {
+    const createStory = async(e) => {
         setslides(ele => {
             const arr = [...ele]
             arr[currIdx] = {...currSlide}
@@ -144,10 +150,24 @@ function EditStory({closeEditModal}) {
                 return;
             }
         });
-
-        const apiUrl = import.meta.env.VITE_SERVER_API;
-        console.log(apiUrl);        
-
+        
+        try {
+            e.target.style.pointerEvents = 'none'
+            const res = await axios.post(`${apiUrl}/story/create-story`, 
+            {
+                type : storyType, 
+                slides: finalSlides
+            }, {
+                withCredentials: true
+            })
+            const story = res.data.data;
+            dispatch(addStory(story))
+            toast.success("Story Posted Sucessfully");
+            closeEditModal()
+        } catch (error) {
+            toast.error(error.response?.data?.message || error.message);
+        }    
+        e.target.style.pointerEvents = 'auto'
     }
 
     return (
@@ -192,7 +212,7 @@ function EditStory({closeEditModal}) {
                             <select className='edit-form-field-input' onChange={e => setStoryType(e.target.value)}>
                                 <option value="">--Please select an appropriate option--</option>
                                 <option value="food">Food</option>
-                                <option value="health and fitness">Health & Fitness</option>
+                                <option value="health">Health & Fitness</option>
                                 <option value="travel">Travel</option>
                                 <option value="movie">Movie</option>
                                 <option value="education">Education</option>

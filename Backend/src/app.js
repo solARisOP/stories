@@ -7,9 +7,9 @@ const app = express()
 
 //middlwares
 app.use(cors({
-    origin: process.env.ORIGIN,
-    methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
-    credentials: true,
+	origin: 'http://localhost:5173',
+	methods: ['GET', 'PATCH', 'POST', 'DELETE'],
+	credentials: true
 }));
 
 app.use(express.json({limit: "16kb"}))

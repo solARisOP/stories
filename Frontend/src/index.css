@@ -31,7 +31,7 @@ body {
   background: #555; 
 } */
 
-input{
+input, textarea{
   font-family: inherit;
   font-feature-settings: inherit;
   font-variation-settings: inherit;

@@ -3,12 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     user: null,
     loading: true,
-    userStories: [],
-    food: [],
-    health: [],
-    education: [],
-    movie: [],
-    travel: []
+    userStories: []
 }
 
 const storySlice = createSlice({
@@ -22,22 +17,21 @@ const storySlice = createSlice({
             state.loading = action.payload;
         },
         setStories: (state, action) => {
-            const key = action.payload.key
-            state[key] = action.payload.data
+            const data = action.payload
+            state.userStories = data
         },
         addStory: (state, action) => {
-            const key = action.payload.key
-            const obj = action.payload.data
-            state[key].push(obj)
-        },
-        removeStory: (state, action) => {
-            const key = action.payload.key
-            const objKey = action.payload.data
-            state[key] = state[key].filter(ele=> ele._id != objKey)
+            const data = action.payload
+            if(Array.isArray(data)) {
+                state.userStories = [...state.userStories, ...data]
+            }
+            else if(data) {
+                state.userStories.push(data)
+            }
         }
     }
 })
 
-export const { setUser, setLoading, setStories, addStory, removeStory } = storySlice.actions
+export const { setUser, setLoading, setStories, addStory } = storySlice.actions
 
 export default storySlice.reducer
