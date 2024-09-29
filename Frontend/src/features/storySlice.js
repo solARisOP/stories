@@ -28,10 +28,13 @@ const storySlice = createSlice({
             else if(data) {
                 state.userStories.push(data)
             }
+        },
+        removeStory: (state, action) => {
+
         }
     }
 })
 
-export const { setUser, setLoading, setStories, addStory } = storySlice.actions
+export const { setUser, setLoading, setStories, addStory, removeStory } = storySlice.actions
 
 export default storySlice.reducer

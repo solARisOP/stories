@@ -1,23 +1,48 @@
+import { 
+    useEffect, 
+    useState 
+} from 'react';
+
+import { 
+    addStory, 
+    removeStory 
+} from '../../features/storySlice.js';
+
+import './index.css'
+import { useDispatch } from 'react-redux';
 import Modal from '../Modal/Modal'
 import { MdOutlineCancel } from "react-icons/md";
-import './index.css'
-import { useState } from 'react';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import isUrl from 'is-url';
-import { useDispatch } from 'react-redux';
-import { addStory } from '../../features/storySlice';
 
-const apiUrl = import.meta.env.VITE_SERVER_API;
+const apiUrl = import.meta.env.VITE_SERVER_API
 
-function EditStory({closeEditModal, editData}) {
+function EditStory({storyId, closeEditModal}) {
     const dispatch = useDispatch()
-
     const [slides, setslides] = useState([{}, {}, {}])
     const [currSlide, setCurrSlide] = useState({})
     const [currIdx, setCurrIdx] = useState(0);
     const [storyType, setStoryType] = useState("")
-
+    
+    useEffect(() => {
+        const fetchStory = async() => {
+            try {
+                const res = await axios.get(`${apiUrl}/story/get-story?key=${storyId}`)
+                const {data} = res.data
+                setslides(data.slides)
+                setCurrSlide(data.slides[0])
+                setStoryType(data.storytype)
+            } catch (error) {
+                closeEditModal()
+                toast.error(error.response.data.message || error.message)
+            }
+        }
+        if(storyId) {
+            fetchStory()
+        }
+    }, [])
+    
     const updateSlide = {
         name : (e) => {
             const name = e.target.value
@@ -121,7 +146,7 @@ function EditStory({closeEditModal, editData}) {
         })
     }
 
-    const createStory = async(e) => {
+    const pushStory = async(e) => {
         setslides(ele => {
             const arr = [...ele]
             arr[currIdx] = {...currSlide}
@@ -135,34 +160,49 @@ function EditStory({closeEditModal, editData}) {
             toast.warning("please select a valid story type");
             return;
         }
+
+        console.log(finalSlides);        
         
-        finalSlides.forEach((slide, idx) => {
-            if(!slide.name.trim()) {
-                toast.warning(`slide-${idx} name is empty`)
+
+        for(const [idx, slide] of finalSlides.entries()) {
+            if(!slide.name || !slide.name.trim()) {
+                toast.warning(`slide-${idx+1} name is empty`)
                 return;
             }
-            else if(!slide.description.trim()) {
-                toast.warning(`slide-${idx} description is empty`)
+            else if(!slide.description || !slide.description.trim()) {
+                toast.warning(`slide-${idx+1} description is empty`)
                 return;
             }
             else if(!slide.url.trim() || !isUrl(slide.url.trim())) {
-                toast.warning(`slide-${idx} url is invalid`)
+                toast.warning(`slide-${idx+1} url is invalid`)
                 return;
             }
-        });
+        }
         
         try {
             e.target.style.pointerEvents = 'none'
-            const res = await axios.post(`${apiUrl}/story/create-story`, 
-            {
-                type : storyType, 
-                slides: finalSlides
-            }, {
-                withCredentials: true
-            })
-            const story = res.data.data;
-            dispatch(addStory(story))
-            toast.success("Story Posted Sucessfully");
+            if(!storyId) {
+                const res = await axios.post(`${apiUrl}/story/create-story`, 
+                {
+                    type : storyType, 
+                    slides: finalSlides
+                }, {
+                    withCredentials: true
+                })
+                const story = res.data.data;
+                dispatch(addStory(story))
+                toast.success("Story created Sucessfully");
+            }
+            else {
+                await axios.patch(`${apiUrl}/story/update-story/${storyId}`, 
+                {
+                    type : storyType, 
+                    slides: finalSlides
+                }, {
+                    withCredentials: true
+                })
+                toast.success("Story updated Sucessfully");
+            }
             closeEditModal()
         } catch (error) {
             toast.error(error.response?.data?.message || error.message);
@@ -185,7 +225,7 @@ function EditStory({closeEditModal, editData}) {
                 <div className='edit-slides-feilds'>
                     <div className='edit-slides-div'>
                         {slides.map((ele, idx) =>
-                            <div className='edit-slide-div' onClick={changeCurrSlide} data-id = {idx}>
+                            <div className={`edit-slide-div ${idx===currIdx ? 'edit-slide-border' : ''}`} onClick={changeCurrSlide} data-id = {idx} key={idx}>
                                 {idx > 2 && <MdOutlineCancel size={18} color='#FF0000' className='edit-slide-cancel' onClick={deleteSlide} data-id = {idx} />}
                                 <p className='edit-slide-title'> Slide {idx + 1} </p>
                             </div>
@@ -209,7 +249,7 @@ function EditStory({closeEditModal, editData}) {
                         </div>
                         <div className='edit-form-field-div'>
                             <p className='edit-form-field-title'>Category :</p>
-                            <select className='edit-form-field-input' onChange={e => setStoryType(e.target.value)}>
+                            <select className='edit-form-field-input' onChange={e => setStoryType(e.target.value)} value={storyType}>
                                 <option value="">--Please select an appropriate option--</option>
                                 <option value="food">Food</option>
                                 <option value="health">Health & Fitness</option>
@@ -226,7 +266,7 @@ function EditStory({closeEditModal, editData}) {
                         <button className='edit-btn' style={{backgroundColor: "#7EFF73"}} onClick={previousSlide}>Previous</button>
                         <button className='edit-btn' style={{backgroundColor: "#73ABFF"}} onClick={nextSlide}>Next</button>
                     </div>
-                    <button className='edit-btn' style={{backgroundColor: "#FF7373"}} onClick={createStory}>Post</button>
+                    <button className='edit-btn' style={{backgroundColor: "#FF7373"}} onClick={pushStory}>Post</button>
                 </div>
             </div>
         </Modal>
@@ -234,3 +274,4 @@ function EditStory({closeEditModal, editData}) {
 }
 
 export default EditStory
+    

@@ -27,7 +27,7 @@ function Router() {
                     <Route index element={<AllStories /> } loader={allLoader} />
                     <Route path=':type' element={<Stories /> } loader={storyLoader} />
                 </Route>
-                <Route path='bookmarks' element={loading ? <Loading/> : <Bookmarks />} loader={() => user ? bookLoader(user._id) : null} />
+                <Route path='bookmarks' element={loading ? <Loading/> : <Bookmarks />} loader={ () => bookLoader(user?._id)} />
                 <Route path=':blob' element={<NotFound />} />
             </Route>
         )

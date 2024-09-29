@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react'
 import './index.css'
-import { useLoaderData, useParams } from 'react-router-dom'
+import { 
+    NavLink, 
+    useLoaderData, 
+    useParams 
+} from 'react-router-dom'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 
@@ -10,10 +14,11 @@ function Stories({title, data}) {
     const {type} = useParams()
     const [stories, setStories] = useState(data)
     const [fetchAll, setFetchAll] = useState(1)
+    const loadData = useLoaderData()
 
     useEffect(() => {
         if(type) {
-            setStories(ele=>useLoaderData())
+            setStories(ele=>loadData)
             setFetchAll(1);
         }
     }, [type])
@@ -22,15 +27,27 @@ function Stories({title, data}) {
     const fetAllStories = async(e) => {
         try {
             e.target.style.pointerEvents = 'none'
-            const tag = title || type
-            const res = await axios.get(`${apiUrl}/feed/stories?skip=${stories.length}&type=${tag.split(" ")[0].toLowerCase()}`,{
-                withCredentials: true
-            })
-            const data = res.data.data
-            setStories(ele=> {
-                const arr = [...ele, ...data]
-                return arr;
-            })
+            if(title == "Bookmarks") {
+                const res = await axios.get(`${apiUrl}/feed/bookmarks?skip=${stories.length}`,{
+                    withCredentials: true
+                })
+                const data = res.data.data
+                setStories(ele=> {
+                    const arr = [...ele, ...data]
+                    return arr;
+                })
+            }
+            else {
+                const tag = title || type
+                const res = await axios.get(`${apiUrl}/feed/stories?skip=${stories.length}&type=${tag.split(" ")[0].toLowerCase()}`,{
+                    withCredentials: true
+                })
+                const data = res.data.data
+                setStories(ele=> {
+                    const arr = [...ele, ...data]
+                    return arr;
+                })
+            }
         } catch (error) {
             toast(error.response?.data?.message || error.message)
         }
@@ -43,13 +60,13 @@ function Stories({title, data}) {
         {stories?.length ? <div className='stories-container'>
             <p className='stories-heading'>{`${title === 'Bookmarks' ? 'Bookmarks' : `Top Stories about ${title || type}`}`}</p>
             <div className='stories-row'>
-                {stories?.map(ele =>
-                    <div className='stories-story' style={{backgroundImage: `url(${ele.slide.image || ele.slide.video})`}}>
+                {stories?.map((ele, idx) =>
+                    <NavLink className='stories-story' style={{backgroundImage: `url(${ele.slide.url})`}} key={idx} to={`/${type || ""}?story=${ele._id}`}>
                         <div className="stories-story-footer">
                             <p className="stories-story-footer-heading">{ele.slide.name}</p>
                             <p className="stories-story-footer-description">{ele.slide.description}</p>
                         </div>
-                    </div>
+                    </NavLink>
                 )}
             </div>
             {fetchAll ? <button className='stories-more-btn' onClick={fetAllStories}>See more</button> : null}

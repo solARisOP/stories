@@ -36,7 +36,6 @@
 
 .story-body-bar {
     flex : 1 1 0%; 
-    background-color: #FFFFFF; 
     height: 2px;
 }
 
@@ -61,6 +60,7 @@
     font-weight: 700; 
     line-height: 26.04px; 
     color: #FFFFFF;
+    margin-bottom: 5px;
 }
 
 .story-footer-description {
@@ -68,6 +68,7 @@
     font-weight: 700; 
     line-height: 13.02px; 
     color: #FFFFFF;
+    margin-bottom: 15px;
 }
 
 .story-footer-op-div {
@@ -80,7 +81,6 @@
 }
 
 .story-arrow {
-    cursor: pointer;
     display: none;
 }
 
@@ -91,7 +91,6 @@
     }
 
     .story-arrow {
-        cursor: pointer;
         display: flex;
     }
 }

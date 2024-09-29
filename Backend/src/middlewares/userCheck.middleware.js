@@ -4,6 +4,7 @@ import { User } from "../models/user.model.js"
 export const checkUser = async (req, _, next) => {
 
     const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "")
+    // const ref = req.cookies?.refreshToken
 
     if (!token) {
         req.user = null;
@@ -14,10 +15,10 @@ export const checkUser = async (req, _, next) => {
 
     const user = await User.findById(decodedToken?._id).select("-password -refreshToken")
 
-    if (!user) {
-        req.user = null;
-    }
-
     req.user = user;
+    // if (!user || user.refreshToken != ref) {
+    //     req.user = null;
+    // }
+
     return next()
 }

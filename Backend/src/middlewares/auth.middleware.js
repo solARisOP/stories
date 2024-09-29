@@ -5,7 +5,7 @@ import { ApiError } from "../utils/ApiError.js"
 export const verifyJWT = async(req, _, next) => {
     try {
         const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "")
-        const ref = req.cookies?.refreshToken
+        // const ref = req.cookies?.refreshToken
 
         if(!token) {
             throw new ApiError(401, "Unauthorized request")
@@ -15,9 +15,9 @@ export const verifyJWT = async(req, _, next) => {
     
         const user = await User.findById(decodedToken?._id).select("-password")
     
-        if(!user || user.refreshToken != ref) {
-            throw new ApiError(401, "Invalid Access Token")
-        }
+        // if(!user || user.refreshToken != ref) {
+        //     throw new ApiError(401, "Invalid Access Token")
+        // }
     
         req.user = user;
         next()

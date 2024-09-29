@@ -6,6 +6,7 @@ import {
     updateStory
 } from "../controllers/story.controller.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js"
+import { checkUser } from "../middlewares/userCheck.middleware.js";
 
 const router = Router()
 
@@ -16,6 +17,6 @@ router.route('/delete-story/:key').delete(verifyJWT, deleteStory)
 
 router.route('/update-story/:key').patch(verifyJWT, updateStory)
 
-router.route('/get-story').get(getStory)
+router.route('/get-story').get(checkUser, getStory)
 
 export default router

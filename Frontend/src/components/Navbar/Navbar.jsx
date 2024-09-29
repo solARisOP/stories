@@ -1,27 +1,60 @@
 import "./index.css"
-import { useDispatch, useSelector } from 'react-redux'
-import { NavLink } from 'react-router-dom';
+import { 
+    useDispatch, 
+    useSelector 
+} from 'react-redux'
+
+import { 
+    NavLink, 
+    useLocation,  
+} from 'react-router-dom';
+
 import {
     IoMenu,
     IoBookmarkSharp
 } from "react-icons/io5";
+
+import { 
+    useEffect, 
+    useState 
+} from "react";
+
+import { 
+    setStories, 
+    setUser 
+} from "../../features/storySlice.js";
+
 import Auth from "../Auth/Auth.jsx";
-import EditStory from "../EditStory/EditStory.jsx";
-import { useState } from "react";
+import EditStory from '../EditStory/EditStory.jsx'
 import { FiX } from "react-icons/fi";
 import axios from "axios";
-import { setStories, setUser } from "../../features/storySlice.js";
 import { toast } from "react-toastify";
+import Story from "../Story/Story.jsx";
 
 const apiUrl = import.meta.env.VITE_SERVER_API
 
 function Navbar() {
     const dispatch = useDispatch()
     const user = useSelector(state => state.user);
-
+    const location = useLocation()    
+        
     const [openDropdown, setOpenDropdown] = useState(0);
     const [authOpen, setAuthOpen] = useState("");
     const [editOpen, setEditOpen] = useState(0);
+    const [storyOpen, setStoryOpen] = useState("")
+    
+    useEffect(() => {
+        const params = new URLSearchParams(location.search)
+        const pathname = location.pathname
+        const key = params.get('story')
+        
+        if(["/food", "/health", "/travel", "/movie", "/education", "/"].includes(pathname) && key && !storyOpen) {
+            setStoryOpen(key)            
+        }
+        else if(!key) {
+            setStoryOpen("") 
+        }
+    }, [location])
 
     const openEditModal = () => {
         setEditOpen(1);
@@ -97,6 +130,7 @@ function Navbar() {
 
             {authOpen ? <Auth title={authOpen} closeAuthModal={closeAuthModal} /> : null}
             {editOpen ? <EditStory closeEditModal={closeEditModal} /> : null}
+            {storyOpen ? <Story storyId={storyOpen} openAuthModal={setAuthOpen} closeModal={setStoryOpen} /> : null}
         </>
     )
 }

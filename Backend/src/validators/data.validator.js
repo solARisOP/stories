@@ -7,10 +7,10 @@ const checkUrlType = async (url, idx) => {
     try {
         const res = await axios.get(url, { responseType: 'blob' });
         const urlType = res.data.type
-        if(urlType.startswith('/image')) {
+        if (urlType.startswith('/image')) {
             return "image"
-        } 
-        else if(urlType.startswith('/video')) {
+        }
+        else if (urlType.startswith('/video')) {
             return "video"
         }
         else {
@@ -64,32 +64,26 @@ const validateUpdationData = async (user, key, data) => {
     else if (!story.owner.equals(user._id)) {
         throw new ApiError(403, "story does not belong to the particular user");
     }
-    else if(data.type && !["food", "health", "travel", "movie", "education"].includes(data.type)) {
+    else if (data.type && !["food", "health", "travel", "movie", "education"].includes(data.type)) {
         throw new ApiError(400, `${data.type} is invalid story type`)
     }
 
-    let urlTypes = {}
-    for (const Id in data.slides) {
-        const slide = data.slides[Id]
+    let urlTypes = {}, idx = 0
+    for (const slide of data.slides) {
         if (slide.name && !slide.name.trim()) {
             throw new ApiError(400, "name cannot be empty for a slide")
         }
-        const sId = new mongoose.Types.ObjectId(Id)
-        if (!story.slides.includes(sId)) {
-            throw new ApiError(400, `slide ${Id} does not belong to this particular story`)
+
+        if (!slide.url.trim()) {
+            throw new ApiError(400, "url feild of slide object cannot be empty or undefined")
         }
-        if (slide.url) {
-            if(!slide.url.trim()) {
-                throw new ApiError(400, "url feild of slide object cannot be empty or undefined")
-            }
-            else {
-                // const urlType = await checkUrlType(slide.url, Id)
-                urlTypes[Id] = "image"
-            }
+        else {
+            // const urlType = await checkUrlType(slide.url, Id)
+            urlTypes[idx++] = "image"
         }
     }
-    
-    return urlTypes
+
+    return { urlTypes, slides: story.slides }
 }
 
 export {

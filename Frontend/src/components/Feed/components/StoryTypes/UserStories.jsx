@@ -4,10 +4,16 @@ import { addStory } from "../../../../features/storySlice";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { NavLink, useParams } from "react-router-dom";
+import EditStory from "../../../EditStory/EditStory";
 
 const apiUrl = import.meta.env.VITE_SERVER_API
 
 function UserStories() {
+
+    const [editOpen, setEditOpen] = useState("")
+
+    const {type} = useParams()
     const dispatch = useDispatch()
     const user = useSelector(state => state.user)
     const userStories = useSelector(state => state.userStories)
@@ -29,21 +35,30 @@ function UserStories() {
         e.target.style.pointerEvents = 'auto'
     }
 
+    const openEditModal = async(e)=>{
+        const key = e.currentTarget.dataset.id
+        setEditOpen(key)
+    }
+
+    const closeEditModal = async(e)=>{
+        setEditOpen("")
+    }
+
     return (
         <>
-            {(user && userStories.length ?
-                <div className="feed-stories-container">
+            {user ?
+                (userStories.length ? <div className="feed-stories-container">
                     <p className="feed-stories-heading">Your Stories</p>
                     <div className="feed-stories-row">
-                        {userStories.map(ele =>
-                            <div className="feed-stories-story" >
-                                <div className="feed-story-body" style={{ backgroundImage: `url(${ele.slide.image || ele.slide.video})` }}>
+                        {userStories.map((ele, idx) =>
+                            <div className="feed-stories-story" key={idx} >
+                                <NavLink className="feed-story-body" style={{ backgroundImage: `url(${ele.slide.url})` }} to={`/${type || ""}?story=${ele._id}`}>
                                     <div className="feed-story-footer">
                                         <p className="feed-story-footer-heading">{ele.slide.name}</p>
                                         <p className="feed-story-footer-description">I{ele.slide.description}</p>
                                     </div>
-                                </div>
-                                <div className="feed-story-edit-btn"><BiEdit size={30} /> Edit </div>
+                                </NavLink>
+                                <div className="feed-story-edit-btn" onClick={openEditModal} data-id={ele._id}><BiEdit size={30} /> Edit </div>
                             </div>
                         )}
                     </div>
@@ -52,8 +67,11 @@ function UserStories() {
                     <p className='stories-heading'>Your Stories</p>
                     <p style={{ fontSize: "30px", fontWeight: "700", lineHeight: "39.06px", color: "#8E8E8E" }}>No stories Available</p>
                     <div />
-                </div>
-            )}
+                </div>)
+                : null
+            }
+
+            {editOpen ? <EditStory storyId={editOpen} closeEditModal={closeEditModal} /> : null}
         </>
     )
 }
