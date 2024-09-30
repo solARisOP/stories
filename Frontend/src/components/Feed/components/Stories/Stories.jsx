@@ -11,7 +11,7 @@ import { toast } from 'react-toastify'
 const apiUrl = import.meta.env.VITE_SERVER_API
 
 function Stories({title, data}) {    
-    const {type} = useParams()
+    const type = useParams().type || ""
     const [stories, setStories] = useState(data)
     const [fetchAll, setFetchAll] = useState(1)
     const loadData = useLoaderData()
@@ -25,8 +25,8 @@ function Stories({title, data}) {
     
 
     const fetAllStories = async(e) => {
+        e.target.style.pointerEvents = 'none'
         try {
-            e.target.style.pointerEvents = 'none'
             if(title == "Bookmarks") {
                 const res = await axios.get(`${apiUrl}/feed/bookmarks?skip=${stories.length}`,{
                     withCredentials: true
@@ -61,7 +61,7 @@ function Stories({title, data}) {
             <p className='stories-heading'>{`${title === 'Bookmarks' ? 'Bookmarks' : `Top Stories about ${title || type}`}`}</p>
             <div className='stories-row'>
                 {stories?.map((ele, idx) =>
-                    <NavLink className='stories-story' style={{backgroundImage: `url(${ele.slide.url})`}} key={idx} to={`/${type || ""}?story=${ele._id}`}>
+                    <NavLink className='stories-story' style={{backgroundImage: `url(${ele.slide.url})`}} key={idx} to={`/${title === 'Bookmarks' ? `bookmarks?story=${ele.story}&slide=${ele.slide._id}` : type+`?story=${ele._id}`}`}>
                         <div className="stories-story-footer">
                             <p className="stories-story-footer-heading">{ele.slide.name}</p>
                             <p className="stories-story-footer-description">{ele.slide.description}</p>
@@ -70,7 +70,7 @@ function Stories({title, data}) {
                 )}
             </div>
             {fetchAll ? <button className='stories-more-btn' onClick={fetAllStories}>See more</button> : null}
-        </div> : <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', height: "500px", width: "100%"}}>
+        </div> : <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', height: "640px", width: "100%"}}>
             <p className='stories-heading'>{`${title === 'Bookmarks' ? 'Bookmarks' : `Top Stories about ${title || type}`}`}</p>
             <p style={{fontSize: "30px", fontWeight: "700", lineHeight: "39.06px", color: "#8E8E8E"}}>No stories Available</p>
             <div />

@@ -48,7 +48,7 @@ function Navbar() {
         const pathname = location.pathname
         const key = params.get('story')
         
-        if(["/food", "/health", "/travel", "/movie", "/education", "/"].includes(pathname) && key && !storyOpen) {
+        if(["/food", "/health", "/travel", "/movie", "/education", "/bookmarks", "/"].includes(pathname) && key && !storyOpen) {
             setStoryOpen(key)            
         }
         else if(!key) {

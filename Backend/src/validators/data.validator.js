@@ -1,27 +1,19 @@
-import axios from "axios";
-import { ApiError } from "../utils/ApiError.js"
-import mongoose from "mongoose"
 import { Story } from "../models/story.model.js";
+import { ApiError } from "../utils/ApiError.js"
 
-const checkUrlType = async (url, idx) => {
-    try {
-        const res = await axios.get(url, { responseType: 'blob' });
-        const urlType = res.data.type
-        if (urlType.startswith('/image')) {
-            return "image"
+const validateData = async (type, slides, key , user) => {
+    let slideIds;
+    let story;
+    if(user) {
+        story = await Story.findById(key)
+        if(!story) {
+            throw ApiError(404, "no story exists with this particular id")
         }
-        else if (urlType.startswith('/video')) {
-            return "video"
+        else if(!story.owner.equals(user._id)) {
+            throw ApiError(403, "story doesnot belong to the particular user")
         }
-        else {
-            throw new ApiError(400, `${idx} is not a valid url`)
-        }
-    } catch (error) {
-        throw new ApiError(400, `${idx} is not a valid url`)
+        slideIds = story.slides.map(ele => ele._id.toString())
     }
-}
-
-const validateData = async (type, slides) => {
     if (!type.trim()) {
         throw new ApiError(400, "story should have a type")
     }
@@ -35,10 +27,14 @@ const validateData = async (type, slides) => {
         throw new ApiError(400, "there cannot be more than 6 slides per story")
     }
 
-    let urlTypes = []
-    for (let idx = 0; idx < slides.length; idx++) {
-        const slide = slides[idx];
+    for (const slide of slides) {
+        if(user && slide._id) {
+            if(!slideIds.includes(slide._id.toString())) {
+                throw new ApiError(400, "slide doesnot belong to this story")
+            }
+        }
         if (!slide.name || !slide.name.trim()) {
+            console.log(slide);            
             throw new ApiError(400, "name feild of slide object cannot be empty or undefined")
         }
         else if (!slide.description || !slide.description.trim()) {
@@ -47,46 +43,14 @@ const validateData = async (type, slides) => {
         else if (!slide.url || !slide.url.trim()) {
             throw new ApiError(400, "url feild of slide object cannot be empty or undefined")
         }
-        // const urlType = await checkUrlType(slide.url, idx)
-        urlTypes.push("image")
-    }
-
-    return urlTypes
-}
-
-const validateUpdationData = async (user, key, data) => {
-
-    const story = await Story.findById(key);
-
-    if (!story) {
-        throw new ApiError(404, "No story exists for this particular id");
-    }
-    else if (!story.owner.equals(user._id)) {
-        throw new ApiError(403, "story does not belong to the particular user");
-    }
-    else if (data.type && !["food", "health", "travel", "movie", "education"].includes(data.type)) {
-        throw new ApiError(400, `${data.type} is invalid story type`)
-    }
-
-    let urlTypes = {}, idx = 0
-    for (const slide of data.slides) {
-        if (slide.name && !slide.name.trim()) {
-            throw new ApiError(400, "name cannot be empty for a slide")
-        }
-
-        if (!slide.url.trim()) {
-            throw new ApiError(400, "url feild of slide object cannot be empty or undefined")
-        }
-        else {
-            // const urlType = await checkUrlType(slide.url, Id)
-            urlTypes[idx++] = "image"
+        else if (!slide.type || !slide.type.trim() || (slide.type != 'image' && slide.type != 'video')) {
+            throw new ApiError(400, `${type} is invalid url type`)
         }
     }
 
-    return { urlTypes, slides: story.slides }
+    return story
 }
 
 export {
-    validateData,
-    validateUpdationData
+    validateData
 }

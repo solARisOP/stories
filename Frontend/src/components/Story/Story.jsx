@@ -35,20 +35,22 @@ function Story({ storyId, openAuthModal, closeModal }) {
     const user = useSelector(state => state.user)
     const [slides, setSlides] = useState([])
     const [currIdx, setCurrIdx] = useState(0)
-    const navigate = useNavigate()
 
     const revertLoc = (message) => {
         const currentUrl = window.location.href  
         const params = currentUrl.split('?')[0].split('/')
         const navUrl = new URL(`${clientUrl}/${params[params.length-1]}`)
-        console.log(currentUrl);
         
         window.history.replaceState({}, '', navUrl);
         closeModal("")
-        toast.error(message)
+        if(message) toast.error(message)
     }
 
     useEffect(() => {
+        const queryParams = new URLSearchParams(window.location.href)
+        let idx = queryParams.get('slide')
+        const param = window.location.pathname
+
         const getStory = async () => {
             try {
                 const res = await axios.get(`${apiUrl}/story/get-story?key=${storyId}`, {
@@ -57,7 +59,14 @@ function Story({ storyId, openAuthModal, closeModal }) {
     
                 const data = res.data.data.slides
                 setSlides(data)
-                if(currIdx < 0 || currIdx >= data.length) {
+                if(param === '/bookmarks') {
+                    data.forEach((slide, ind) => {
+                        if(slide._id == idx) {
+                            setCurrIdx(ind);
+                        }
+                    });
+                }
+                else if(currIdx < 0 || currIdx >= data.length) {
                     revertLoc("invalid story url")
                 }
             } catch (error) {
@@ -66,17 +75,18 @@ function Story({ storyId, openAuthModal, closeModal }) {
         }
         getStory();
 
-        const params = new URLSearchParams(window.location.href)
-        let idx = params.get('slide')
-        if(idx !== null) {
-            if (idx !== isNaN(idx)) {
-                idx = parseInt(idx)
-                setCurrIdx(idx - 1)
-            }
-            else {
-                revertLoc("invalid story url")
+        if(param !== '/bookmarks') {
+            if(idx !== null) {
+                if (idx !== isNaN(idx)) {
+                    idx = parseInt(idx)
+                    setCurrIdx(idx - 1)
+                }
+                else {
+                    revertLoc("invalid story url")
+                }
             }
         }
+
     }, [])
 
     useEffect(() => {
@@ -107,7 +117,7 @@ function Story({ storyId, openAuthModal, closeModal }) {
     }
 
     const closeStory = () => {
-        navigate(-1)
+        revertLoc()
     }
 
     const likeSlide = async (e) => {

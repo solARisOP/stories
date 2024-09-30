@@ -94,9 +94,6 @@ function EditStory({storyId, closeEditModal}) {
             arr.push({})
             return arr
         })
-
-        setCurrIdx(slides.length)
-        setCurrSlide({})
     }
 
     const deleteSlide = (e) => {
@@ -159,10 +156,7 @@ function EditStory({storyId, closeEditModal}) {
         if(!storyType) {
             toast.warning("please select a valid story type");
             return;
-        }
-
-        console.log(finalSlides);        
-        
+        }    
 
         for(const [idx, slide] of finalSlides.entries()) {
             if(!slide.name || !slide.name.trim()) {
@@ -177,10 +171,11 @@ function EditStory({storyId, closeEditModal}) {
                 toast.warning(`slide-${idx+1} url is invalid`)
                 return;
             }
+            slide.type = 'image';
         }
         
+        e.target.style.pointerEvents = 'none'
         try {
-            e.target.style.pointerEvents = 'none'
             if(!storyId) {
                 const res = await axios.post(`${apiUrl}/story/create-story`, 
                 {

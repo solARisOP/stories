@@ -1,10 +1,7 @@
 import { ApiError } from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 import { Slide } from "../models/slide.model.js"
-import {
-    validateData,
-    validateUpdationData
-} from "../validators/data.validator.js";
+import { validateData } from "../validators/data.validator.js";
 import { Story } from "../models/story.model.js";
 import mongoose from "mongoose";
 import { Bookmark } from "../models/bookmark.model.js";
@@ -13,14 +10,14 @@ import { Like } from "../models/like.model.js";
 const createStory = async (req, res) => {
     const { type, slides } = req.body;
 
-    const slideTypes = await validateData(type, slides)
+    await validateData(type, slides)
 
-    const newSlides = await Promise.all(slides.map((slide, idx) =>
+    const newSlides = await Promise.all(slides.map( slide =>
         Slide.create({
             name: slide.name,
             description: slide.description,
-            ...(slideTypes[idx] == 'image' && { type: 'image', url: slide.url }),
-            ...(slideTypes[idx] == 'video' && { type: 'video', url: slide.url }),
+            type: slide.type,
+            url : slide.url
         })
     ))
 
@@ -143,37 +140,36 @@ const deleteStory = async (req, res) => {
 
 const updateStory = async (req, res) => {
     const { key } = req.params;
-    const data = req.body
+    const { type, slides } = req.body
 
-    const { urlTypes, slides } = await validateUpdationData(req.user, key, data)
+    const story = await validateData(type, slides, key, req.user)
 
     const promise = [];
 
-    let idx = 0;
-    for (const currSlide of data.slides) {
+    for (const currSlide of slides) {
         let slide = Slide({});
         if (currSlide._id) {
             slide = await Slide.findById(currSlide._id);
         }
         slide.name = currSlide.name;
         slide.description = currSlide.description;
-        slide.url = currSlide.url
-        slide.type = urlTypes[idx++]
+        slide.url = currSlide.url;
+        slide.type = currSlide.type;
         promise.push(slide.save());
     }
 
     const newSlides = await Promise.all(promise)
-    const strIds = newSlides.map(ele => ele._id.toString())
-    const story = await Story.findById(key)
+    const slideIds = newSlides.map(Id => Id._id.toString())
 
     const delPromises = []
     for (const Id of story.slides) {        
-        if (!strIds.includes(Id.toString())) {
+        if (!slideIds.includes(Id.toString())) {
+            console.log("here");            
             delPromises.push(Bookmark.deleteMany({slide: Id}), Like.deleteMany({slide: Id}), Slide.findByIdAndDelete(Id))
         }
     }
     
-    story.type = data.type;
+    story.type = type;
     story.slides = newSlides.map(ele => ele._id);
     delPromises.push(story.save())
     
