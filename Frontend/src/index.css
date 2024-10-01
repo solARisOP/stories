@@ -61,6 +61,15 @@ img {
   height: auto;
 }
 
+.story-video {
+  position: absolute;
+  z-index: -1;
+  height: 100%;
+  width: 100%;
+  inset: 0px; 
+  object-fit: contain;
+  object-position: center;
+}
 
 .toast-position {
   top: 65px !important;

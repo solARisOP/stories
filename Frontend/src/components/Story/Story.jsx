@@ -192,7 +192,8 @@ function Story({ storyId, openAuthModal, closeModal }) {
         <Modal>
             {slides.length ? <div className="story-container">
                 <MdArrowBackIos size={60} color={currIdx ? "#FFFFFF" : "#FFFFFF88"} className="story-arrow" style={{ cursor: currIdx ? 'pointer' : 'auto' }} onClick={e => changeSlide(0)} />
-                <div style={{ backgroundImage: `url(${slides[currIdx].url}), linear-gradient(rgba(0, 0, 0, 1), rgba(0, 0, 0, 1))` }} className="story-body">
+                <div style={slides[currIdx].type === 'image' ? { backgroundImage: `url(${slides[currIdx].url}), linear-gradient(rgba(0, 0, 0, 1), rgba(0, 0, 0, 1))` } : null} className="story-body">
+                    {slides[currIdx].type === 'video' && <video autoPlay loop src={slides[currIdx].url} className="story-video" />}
                     <div className="story-body-header">
                         <div className="story-body-bar-div">
                             {slides.map((ele, idx) =>

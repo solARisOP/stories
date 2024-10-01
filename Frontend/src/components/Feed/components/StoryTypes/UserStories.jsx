@@ -13,17 +13,17 @@ function UserStories() {
 
     const [editOpen, setEditOpen] = useState("")
 
-    const {type} = useParams()
+    const { type } = useParams()
     const dispatch = useDispatch()
     const user = useSelector(state => state.user)
     const userStories = useSelector(state => state.userStories)
 
     const [fetchAll, setFetchAll] = useState(1)
-    
-    const fetAllStories = async(e) => {
+
+    const fetAllStories = async (e) => {
         try {
             e.target.style.pointerEvents = 'none'
-            const res = await axios.get(`${apiUrl}/feed/user-stories?skip=${userStories.length}`,{
+            const res = await axios.get(`${apiUrl}/feed/user-stories?skip=${userStories.length}`, {
                 withCredentials: true
             })
             const stories = res.data.data
@@ -35,12 +35,12 @@ function UserStories() {
         e.target.style.pointerEvents = 'auto'
     }
 
-    const openEditModal = async(e)=>{
+    const openEditModal = async (e) => {
         const key = e.currentTarget.dataset.id
         setEditOpen(key)
     }
 
-    const closeEditModal = async(e)=>{
+    const closeEditModal = async (e) => {
         setEditOpen("")
     }
 
@@ -52,7 +52,8 @@ function UserStories() {
                     <div className="feed-stories-row">
                         {userStories.map((ele, idx) =>
                             <div className="feed-stories-story" key={idx} >
-                                <NavLink className="feed-story-body" style={{ backgroundImage: `url(${ele.slide.url})` }} to={`/${type || ""}?story=${ele._id}`}>
+                                <NavLink className="feed-story-body" style={ele.slide.type === 'image' ? { backgroundImage: `url(${ele.slide.url})` } : null} to={`/${type || ""}?story=${ele._id}`}>
+                                    {ele.slide.type === 'video' && <video src={ele.slide.url} className="story-video" />}
                                     <div className="feed-story-footer">
                                         <p className="feed-story-footer-heading">{ele.slide.name}</p>
                                         <p className="feed-story-footer-description">I{ele.slide.description}</p>
