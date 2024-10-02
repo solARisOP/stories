@@ -206,7 +206,8 @@ function Story({ storyId, openAuthModal, closeModal }) {
             const a = document.createElement('a');
             a.href = url;
 
-            a.download = fileUrl.split('/').pop(); 
+            const regex = /[^/]+\.[a-z0-9]+(?=[?#]|$)/i;
+            a.download = fileUrl.match(regex)[0]
 
             document.body.appendChild(a);
             a.click();
@@ -223,7 +224,7 @@ function Story({ storyId, openAuthModal, closeModal }) {
             {slides.length ? <div className="story-container">
                 <MdArrowBackIos size={60} color={currIdx ? "#FFFFFF" : "#FFFFFF88"} className="story-arrow" style={{ cursor: currIdx ? 'pointer' : 'auto' }} onClick={e => changeSlide(0)} />
                 <div style={slides[currIdx].type === 'image' ? { backgroundImage: `url(${slides[currIdx].url}), linear-gradient(rgba(0, 0, 0, 1), rgba(0, 0, 0, 1))` } : null} className="story-body">
-                    {slides[currIdx].type === 'video' && <video autoPlay loop src={slides[currIdx].url} className="story-video" />}
+                    {slides[currIdx].type === 'video' && <video autoPlay loop muted src={slides[currIdx].url} className="story-video" />}
                     <div className="story-body-header">
                         <div className="story-body-bar-div">
                             {slides.map((ele, idx) =>
