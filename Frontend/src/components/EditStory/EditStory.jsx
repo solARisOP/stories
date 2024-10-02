@@ -3,11 +3,10 @@ import {
     useState
 } from 'react';
 
-import {
-    addStory,
-    removeStory
+import { 
+    addStory, 
+    updateStory 
 } from '../../features/storySlice.js';
-
 import './index.css'
 import { useDispatch } from 'react-redux';
 import Modal from '../Modal/Modal'
@@ -145,7 +144,6 @@ function EditStory({ storyId, closeEditModal }) {
         })
     }
 
-
     const checkMediaType = async (url, idx) => {
         const video = document.createElement('video');
         video.src = url;
@@ -153,7 +151,7 @@ function EditStory({ storyId, closeEditModal }) {
         return new Promise((resolve, reject) => {
             video.onloadedmetadata = () => {
                 const duration = video.duration;
-
+                
                 if (duration <= 15) {
                     resolve('video');
                 } else {
@@ -207,10 +205,10 @@ function EditStory({ storyId, closeEditModal }) {
             modalRef.current.style.pointerEvents = 'none'
             try {
                 const type = await checkMediaType(slide.url.trim(), idx+1)
-                slide.type = type
-                console.log(type);                
+                slide.type = type                
             } catch (error) {
                 toast.error(error);                
+                modalRef.current.style.pointerEvents = 'auto'
                 return;
             }
             modalRef.current.style.pointerEvents = 'auto'
@@ -231,13 +229,15 @@ function EditStory({ storyId, closeEditModal }) {
                 toast.success("Story created Sucessfully");
             }
             else {
-                await axios.patch(`${apiUrl}/story/update-story/${storyId}`,
+                const res = await axios.patch(`${apiUrl}/story/update-story/${storyId}`,
                     {
                         type: storyType,
                         slides: finalSlides
                     }, {
                     withCredentials: true
                 })
+                const slide = res.data.data
+                dispatch(updateStory({key : storyId, slide}))
                 toast.success("Story updated Sucessfully");
             }
             closeEditModal()

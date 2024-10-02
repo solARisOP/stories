@@ -50,6 +50,17 @@
     align-items: center;
 }
 
+.story-body-mid {
+    display: flex;
+    width: 100%;
+    flex: 1 1 0%;
+    pointer-events: auto;
+}
+
+.story-body-mid-section {
+    flex: 1 1 0%;
+}
+
 .story-body-footer {
     display: flex; 
     flex-direction: column; 
@@ -83,6 +94,19 @@
     margin-bottom: 20px;
 }
 
+.story-likes-div {
+    display: flex; 
+    gap: 10px; 
+    align-items: center;
+}
+
+.story-likes-count {
+    font-size: 9px; 
+    font-weight: 700; 
+    line-height: 11.72px; 
+    color: #FFFFFF;
+}
+
 .story-arrow {
     display: none;
 }
@@ -95,5 +119,9 @@
 
     .story-arrow {
         display: flex;
+    }
+
+    .story-body-mid {
+        pointer-events: none;
     }
 }

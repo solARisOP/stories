@@ -89,7 +89,6 @@ function Navbar() {
     return (
         <>
             <div className='nav-body'>
-
                 <div className='nav-content-big'>
                     {user ? <>
                         <NavLink className='nav-btn nav-mark' to={'/bookmarks'} ><IoBookmarkSharp size={24} color={'#FFFFF'} />Bookmarks</NavLink>
@@ -97,7 +96,7 @@ function Navbar() {
                         <div className='nav-pic' ></div>
                         <IoMenu size={24} color={'#000000'} style={{ cursor: "pointer" }} onClick={e => setOpenDropdown(ele => !ele)} />
                         <div style={{ display: `${openDropdown ? 'flex' : 'none'}` }} className="nav-big-lgt-div">
-                            <p className=".nav-dropdown-title">{user.username}</p>
+                            <p className="nav-dropdown-title">{user.username.substring(0, 20)}</p>
                             <button className='nav-btn' onClick={logout}>Logout</button>
                         </div>
                     </> : <>
@@ -114,7 +113,7 @@ function Navbar() {
                         {user ? <>
                             <div className="nav-small-name-div">
                                 <div className='nav-pic' ></div>
-                                <p className=".nav-dropdown-title">{user.username}</p>
+                                <p className="nav-dropdown-title">{user.username.substring(0, 20)}</p>
                                 <FiX size={24} color={'#000000'} style={{ cursor: "pointer" }} onClick={e => setOpenDropdown(ele => !ele)} />
                             </div>
                             <button className='nav-btn' onClick={logout}>Logout</button>

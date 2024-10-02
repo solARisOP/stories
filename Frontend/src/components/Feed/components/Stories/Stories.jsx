@@ -65,17 +65,17 @@ function Stories({ title, data }) {
 
                             {ele.slide.type === 'video' && <video src={ele.slide.url} className="story-video" />}
                             <div className="stories-story-footer">
-                                <p className="stories-story-footer-heading">{ele.slide.name}</p>
-                                <p className="stories-story-footer-description">{ele.slide.description}</p>
+                                <p className="stories-story-footer-heading">{ele.slide.name.substring(0, 30)}</p>
+                                <p className="stories-story-footer-description">{ele.slide.description.substring(0, 200)}</p>
                             </div>
 
                         </NavLink>
                     )}
                 </div>
                 {fetchAll ? <button className='stories-more-btn' onClick={fetAllStories}>See more</button> : null}
-            </div> : <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', height: "640px", width: "100%" }}>
+            </div> : <div className='feed-nostory'>
                 <p className='stories-heading'>{`${title === 'Bookmarks' ? 'Bookmarks' : `Top Stories about ${title || type}`}`}</p>
-                <p style={{ fontSize: "30px", fontWeight: "700", lineHeight: "39.06px", color: "#8E8E8E" }}>No stories Available</p>
+                <p className='feed-nostory-text'>No stories Available</p>
                 <div />
             </div>}
         </>

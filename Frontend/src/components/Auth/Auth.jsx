@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import Modal from '../Modal/Modal.jsx'
 import { MdOutlineCancel } from "react-icons/md";
-// import { GoEye } from "react-icons/go";
+import { GoEye } from "react-icons/go";
 import './index.css';
 import { toast } from 'react-toastify';
 import axios from 'axios';
@@ -16,6 +16,7 @@ function Auth({title, closeAuthModal}) {
     const [password, setPassword] = useState("")
 
     const [error, setError] = useState("");
+    const passRef = useRef(null)
 
     const updateUsername = (e) => {
         setUsername(e.target.value)
@@ -64,6 +65,15 @@ function Auth({title, closeAuthModal}) {
 		else setError(validationError);
     }
 
+    const changeType = () => {
+        if(passRef.current.type == 'text') {
+            passRef.current.type = 'password'
+        }
+        else {
+            passRef.current.type = 'text'
+        }
+    }
+
   return (
     <Modal> 
         <div className='auth-body'>
@@ -77,9 +87,14 @@ function Auth({title, closeAuthModal}) {
             </div>
             <div className='auth-input-div'>
                 <p className='auth-input-field-title'>Password</p>
-                <input type="password" className='auth-input-field' placeholder='Enter your password' value={password || ""} onChange={updatePassword}/>
+                <div className='auth-input-field-div'>
+                    <div className='pass-eye-div'>
+                        <GoEye size={20} onClick={changeType} />
+                    </div>
+                    <input type="password" className='auth-input-field' placeholder='Enter your password' value={password || ""} onChange={updatePassword} ref={passRef}/>
+                </div>
             </div>
-            <p style={{textAlign: 'center', color: "#FF0E0E", fontSize: "12px", fontWeight: "700", lineHeight: "15.62px"}}>
+            <p className='auth-invalid'>
                 {error}
             </p>
             <button className='auth-submit-btn' onClick={submitAuth}>

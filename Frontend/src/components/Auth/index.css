@@ -36,10 +36,31 @@
     line-height: 26.04px; 
 }
 
+.auth-input-field-div {
+    position: relative;
+    width: 100%
+}
+
+.pass-eye-div {
+    background-color: #FFFFFF; 
+    position: absolute; 
+    top: 2px; 
+    right: 2px; 
+    cursor: pointer;
+}
+
 .auth-input-field {
     border: 1px solid #000000; 
     padding: 2px;
     width: 100%;
+}
+
+.auth-invalid {
+    text-Align: center; 
+    color: #FF0E0E; 
+    font-size: 12px; 
+    font-weight: 700; 
+    line-height: 15.62px;
 }
 
 .auth-submit-btn {
@@ -66,6 +87,10 @@
     }
 
     .auth-input-field {
+        width: auto;
+    }
+
+    .auth-input-field-div {
         width: auto;
     }
     

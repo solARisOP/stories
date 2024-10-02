@@ -15,6 +15,7 @@ import {
 } from "react";
 
 import {
+    Link,
     useLocation,
     useNavigate
 } from "react-router-dom";
@@ -37,13 +38,13 @@ function Story({ storyId, openAuthModal, closeModal }) {
     const [currIdx, setCurrIdx] = useState(0)
 
     const revertLoc = (message) => {
-        const currentUrl = window.location.href  
+        const currentUrl = window.location.href
         const params = currentUrl.split('?')[0].split('/')
-        const navUrl = new URL(`${clientUrl}/${params[params.length-1]}`)
-        
+        const navUrl = new URL(`${clientUrl}/${params[params.length - 1]}`)
+
         window.history.replaceState({}, '', navUrl);
         closeModal("")
-        if(message) toast.error(message)
+        if (message) toast.error(message)
     }
 
     useEffect(() => {
@@ -56,17 +57,17 @@ function Story({ storyId, openAuthModal, closeModal }) {
                 const res = await axios.get(`${apiUrl}/story/get-story?key=${storyId}`, {
                     withCredentials: true
                 })
-    
+
                 const data = res.data.data.slides
                 setSlides(data)
-                if(param === '/bookmarks') {
+                if (param === '/bookmarks') {
                     data.forEach((slide, ind) => {
-                        if(slide._id == idx) {
+                        if (slide._id == idx) {
                             setCurrIdx(ind);
                         }
                     });
                 }
-                else if(currIdx < 0 || currIdx >= data.length) {
+                else if (currIdx < 0 || currIdx >= data.length) {
                     revertLoc("invalid story url")
                 }
             } catch (error) {
@@ -75,8 +76,8 @@ function Story({ storyId, openAuthModal, closeModal }) {
         }
         getStory();
 
-        if(param !== '/bookmarks') {
-            if(idx !== null) {
+        if (param !== '/bookmarks') {
+            if (idx !== null) {
                 if (idx !== isNaN(idx)) {
                     idx = parseInt(idx)
                     setCurrIdx(idx - 1)
@@ -121,7 +122,7 @@ function Story({ storyId, openAuthModal, closeModal }) {
     }
 
     const likeSlide = async (e) => {
-        if(!user) {
+        if (!user) {
             revertLoc("Login to like the story")
             openAuthModal("Login");
             return;
@@ -129,7 +130,7 @@ function Story({ storyId, openAuthModal, closeModal }) {
         e.currentTarget.style.pointerEvents = 'none'
 
         try {
-            if(slides[currIdx].likedByUser) {
+            if (slides[currIdx].likedByUser) {
                 await axios.delete(`${apiUrl}/slide/unlike-slide/${slides[currIdx]._id}`, {
                     withCredentials: true
                 })
@@ -141,7 +142,7 @@ function Story({ storyId, openAuthModal, closeModal }) {
             }
             setSlides(ele => {
                 const arr = [...ele]
-                if(arr[currIdx].likedByUser) {
+                if (arr[currIdx].likedByUser) {
                     arr[currIdx].likes--;
                 }
                 else {
@@ -158,7 +159,7 @@ function Story({ storyId, openAuthModal, closeModal }) {
     }
 
     const bookmarkSlide = async (e) => {
-        if(!user) {
+        if (!user) {
             revertLoc("Login to bookmark the story")
             openAuthModal("Login");
             return;
@@ -166,7 +167,7 @@ function Story({ storyId, openAuthModal, closeModal }) {
         e.currentTarget.style.pointerEvents = 'none'
 
         try {
-            if(slides[currIdx].markedByUser) {
+            if (slides[currIdx].markedByUser) {
                 await axios.delete(`${apiUrl}/slide/unmark-slide/${slides[currIdx]._id}`, {
                     withCredentials: true
                 })
@@ -188,6 +189,35 @@ function Story({ storyId, openAuthModal, closeModal }) {
         e.target.style.pointerEvents = 'auto'
     }
 
+    const downloadFile = async () => {
+        const fileUrl = slides[currIdx].url;
+
+        try {
+            const response = await axios({
+                url: fileUrl,
+                method: 'GET',
+                responseType: 'blob',
+            });
+
+            const blob = new Blob([response.data]);
+
+            const url = window.URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+
+            a.download = fileUrl.split('/').pop(); 
+
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            toast(error.response.data.message || error.message);
+        }
+    };
+
     return (
         <Modal>
             {slides.length ? <div className="story-container">
@@ -205,17 +235,21 @@ function Story({ storyId, openAuthModal, closeModal }) {
                             <TbSend size={24} color="#FFFFFF" onClick={copyLink} style={{ cursor: 'pointer' }} />
                         </div>
                     </div>
+                    <div className="story-body-mid">
+                        <div className="story-body-mid-section" onClick={e => changeSlide(0)} />
+                        <div className="story-body-mid-section" onClick={e => changeSlide(1)} />
+                    </div>
                     <div className="story-body-footer">
-                        <p className="story-footer-heading">{slides[currIdx].name}</p>
-                        <p className="story-footer-description">{slides[currIdx].description}</p>
+                        <p className="story-footer-heading">{slides[currIdx].name.substring(0, 30)}</p>
+                        <p className="story-footer-description">{slides[currIdx].description.substring(0, 200)}</p>
                         <div className="story-footer-op-div">
                             <FaBookmark size={24} color={slides[currIdx].markedByUser ? "#085CFF" : "#FFFFFF"} onClick={bookmarkSlide} style={{ cursor: 'pointer' }} />
 
-                            {user ? <TfiDownload size={24} color="#FFFFFF" style={{ cursor: 'pointer' }} /> : null}
+                            {user ? <TfiDownload size={24} color="#FFFFFF" style={{ cursor: 'pointer' }} onClick={downloadFile} /> : null}
 
-                            <div style={{ display: 'flex', gap: "10px", alignItems: "center" }}>
+                            <div className="story-likes-div">
                                 <FaHeart size={24} color={slides[currIdx].likedByUser ? "#FF0000" : "#FFFFFF"} onClick={likeSlide} style={{ cursor: 'pointer' }} />
-                                {slides[currIdx].likes ? <p style={{ fontSize: '9px', fontWeight: 700, lineHeight: '11.72px', color: "#FFFFFF"}}>{slides[currIdx].likes}</p> : null}
+                                {slides[currIdx].likes ? <p className="story-likes-count">{slides[currIdx].likes}</p> : null}
                             </div>
                         </div>
                     </div>

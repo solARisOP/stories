@@ -55,8 +55,8 @@ function UserStories() {
                                 <NavLink className="feed-story-body" style={ele.slide.type === 'image' ? { backgroundImage: `url(${ele.slide.url})` } : null} to={`/${type || ""}?story=${ele._id}`}>
                                     {ele.slide.type === 'video' && <video src={ele.slide.url} className="story-video" />}
                                     <div className="feed-story-footer">
-                                        <p className="feed-story-footer-heading">{ele.slide.name}</p>
-                                        <p className="feed-story-footer-description">I{ele.slide.description}</p>
+                                        <p className="feed-story-footer-heading">{ele.slide.name.substring(0, 30)}</p>
+                                        <p className="feed-story-footer-description">I{ele.slide.description.substring(0, 200)}</p>
                                     </div>
                                 </NavLink>
                                 <div className="feed-story-edit-btn" onClick={openEditModal} data-id={ele._id}><BiEdit size={30} /> Edit </div>
@@ -64,9 +64,9 @@ function UserStories() {
                         )}
                     </div>
                     {fetchAll ? <button className="feed-stories-more-btn" onClick={fetAllStories}>See more</button> : null}
-                </div> : <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', height: "500px", width: "100%" }}>
+                </div> : <div className="feed-nostory">
                     <p className='stories-heading'>Your Stories</p>
-                    <p style={{ fontSize: "30px", fontWeight: "700", lineHeight: "39.06px", color: "#8E8E8E" }}>No stories Available</p>
+                    <p className="feed-nostory-text">No stories Available</p>
                     <div />
                 </div>)
                 : null

@@ -29,12 +29,18 @@ const storySlice = createSlice({
                 state.userStories.push(data)
             }
         },
-        removeStory: (state, action) => {
-
+        updateStory: (state, action) => {
+            const { key, slide } = action.payload
+            state.userStories = state.userStories.map(ele => {
+                if(key == ele._id) {
+                    ele.slide = slide
+                }
+                return ele;
+            })
         }
     }
 })
 
-export const { setUser, setLoading, setStories, addStory, removeStory } = storySlice.actions
+export const { setUser, setLoading, setStories, addStory, updateStory } = storySlice.actions
 
 export default storySlice.reducer

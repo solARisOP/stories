@@ -179,7 +179,7 @@ const updateStory = async (req, res) => {
         .status(200)
         .json(new ApiResponse(
             200,
-            {},
+            newSlides[0],
             "story updated sucessfully"
         ))
 }

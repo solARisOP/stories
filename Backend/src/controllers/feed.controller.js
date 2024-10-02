@@ -4,7 +4,7 @@ import { Bookmark } from "../models/bookmark.model.js"
 import { Story } from "../models/story.model.js"
 import mongoose from "mongoose"
 
-const getStories = async(param, skip) => {
+const getStories = async(param, skip, limit) => {
     const stories = await Story.aggregate([
         {
             $match : {
@@ -16,7 +16,7 @@ const getStories = async(param, skip) => {
             $skip: skip || 0
         },
         {
-            $limit: 5
+            $limit: limit || 1000000
         },
         {
             $lookup: {
@@ -44,7 +44,7 @@ const getStories = async(param, skip) => {
 }
 
 const getBookmarks = async (req, res) => {
-    const {skip} = req.query
+    const {skip, limit} = req.query
 
     let marks = await Bookmark.aggregate([
         {
@@ -56,7 +56,7 @@ const getBookmarks = async (req, res) => {
             $skip: parseInt(skip) || 0
         },
         {
-            $limit: 4
+            $limit: parseInt(limit) || 1000000
         },
         {
             $lookup: {
@@ -95,7 +95,7 @@ const getBookmarks = async (req, res) => {
 
 const getFeedStories = async (req, res) => {
     const storyTypes = [ "food", "health", "travel", "movie", "education"];
-    const data = await Promise.all(storyTypes.map(type => getStories(type, 0)))
+    const data = await Promise.all(storyTypes.map(type => getStories(type, 0, 4)))
 
     return res
     .status(200)
@@ -107,9 +107,9 @@ const getFeedStories = async (req, res) => {
 }
 
 const getStoriesType = async (req, res) => {
-    const {skip, type} = req.query
+    const {skip, type, limit} = req.query
 
-    const stories = await getStories(type, parseInt(skip) || 0)
+    const stories = await getStories(type, parseInt(skip) || 0, parseInt(limit))
 
     if(!stories.length) {
         throw new ApiError(400, `no more stories avaliable of type ${type}`)

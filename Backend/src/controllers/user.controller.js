@@ -87,7 +87,7 @@ const loginUser = async(req, res) => {
         sameSite: 'None',
     }
 
-    const stories = await getStories(user._id)
+    const stories = await getStories(user._id, 0, 4)
 
     return res
     .status(200)
@@ -128,7 +128,7 @@ const logoutUser = async(req, res) => {
 }
 
 const getUser = async(req, res) => {
-    const stories = await getStories(req.user._id)
+    const stories = await getStories(req.user._id, 0, 4)
     return res
     .status(200)
     .json(new ApiResponse(

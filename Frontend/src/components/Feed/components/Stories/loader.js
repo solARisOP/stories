@@ -7,7 +7,7 @@ export const loader = async({params}) => {
     
         if(!['food', 'health', 'travel', 'movie', 'education'].includes(type)) return null
     
-        const res = await axios.get(`${apiUrl}/feed/stories?type=${type}`, {
+        const res = await axios.get(`${apiUrl}/feed/stories?type=${type}&limit=4`, {
             withCredentials: true
         })
         
