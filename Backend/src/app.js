@@ -7,7 +7,7 @@ const app = express()
 
 //middlwares
 app.use(cors({
-	origin: process.env.ORIGIN,
+	origin: 'https://stories-server-t7g3.onrender.com',
 	methods: ['GET', 'PATCH', 'HEAD', 'PUT', 'POST', 'DELETE'],
 	credentials: true
 }));
